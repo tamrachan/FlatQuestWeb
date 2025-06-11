@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>FlatQuestWeb</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <main>
+        <h1>Sign Up to FlatQuestWeb</h1>
+        <form>
+            <!-- Email -->
+            <label for="email">Email:</label><br>
+            <input type="text" id="email" name="email"><br>
+            <!-- Username -->
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username"><br>
+            <!-- Password -->
+            <label for="pw">Password:</label><br>
+            <input type="text" id="pw" name="pw">
+            <!-- Add option for group leader -->
+            <p>Please select your account type:</p>
+            <!-- Group leader -->
+            <input type="radio" id="html" name="account_type" value="leader">
+            <label for="leader">Group leader</label><br>
+            <!-- Join a group -->
+            <input type="radio" id="css" name="account_type" value="member">
+            <label for="member">Member (with a group code)</label><br>
+            <br>
+            <input type="submit" value="Enter">
+        </form>
+    </main>
+    <script src="index.js"></script>
+  </body>
+</html>
