@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from 'axios';
 
 export const Register = (props) => {
     const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ export const Register = (props) => {
         console.log(name, user, email, pass);
 
         if (name !== '' && user !== '' && email !== '' && pass !== '') {
-            axios.post('', {name,user,email, pass})
+            axios.post('TBC WITH MONGOOSE', {name,user,email, pass})
                 .then(result => console.log(result))
                 .catch(err => console.log(err))
 

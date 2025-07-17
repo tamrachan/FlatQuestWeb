@@ -19,12 +19,12 @@ function App() {
                 }
             </div>
             
-            <BrowserRouter>
+            {/* <BrowserRouter>
                 <Routes>
                     <Route path='/register' element={<Register />}></Route>
                     <Route path='/login' element={<Login />}></Route>
                 </Routes>
-            </BrowserRouter>
+            </BrowserRouter> */}
         </>
     );
 }

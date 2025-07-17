@@ -24,7 +24,7 @@ export const Login = (props) => {
         if (email !== '' && pass !== '') {
             try {
                 //await sendUserDetails({email, pass});
-                axios.post('', {email, pass})
+                axios.post('TBC WITH MONGOOSE', {email, pass})
                     .then(result => console.log(result))
                     .catch(err => console.log(err))
                 
