@@ -4,7 +4,7 @@
     min-height: 100vh;
     align-items: center; /* Places in centre of page */
     justify-content: center;
-    background-color: azure;
+    background-color: whitesmoke;
     font-family: Calibri;
 }
 
@@ -17,6 +17,7 @@
     padding: 5rem;
     border: 1px solid gray;
     border-radius: 10px;
+    background-color: #ADD8E6;
 }
 
 @media screen and (min-width: 600px) {
@@ -36,6 +37,7 @@ input {
     padding: 1rem;
     border: none;
     border-radius: 10px;
+    background-color: whitesmoke;
 }
 
 button {

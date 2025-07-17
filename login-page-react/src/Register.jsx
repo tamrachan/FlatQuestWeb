@@ -12,6 +12,10 @@ export const Register = (props) => {
         console.log(name, user, email, pass);
 
         if (name !== '' && user !== '' && email !== '' && pass !== '') {
+            axios.post('', {name,user,email, pass})
+                .then(result => console.log(result))
+                .catch(err => console.log(err))
+
             console.log("Valid entries - adding to database");
             setEmail('');
             setPass('');
@@ -19,8 +23,6 @@ export const Register = (props) => {
         } else {
             console.log("Invalid entries");
         }
-
-        
     }
 
     return (

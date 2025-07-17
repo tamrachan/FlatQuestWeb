@@ -1,15 +1,41 @@
 import React, { useState } from "react";
+import axios from 'axios';
+
+// // Without axios
+// async function sendUserDetails(userData) {
+//   const response = await fetch('http://localhost:5000/api/login', {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(userData),
+//   });
+//   if (!response.ok) throw new Error('Login failed');
+
+//   return response.json();
+// }
 
 export const Login = (props) => {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(email);
+        console.log(email, pass);
 
-        setEmail('');
-        setPass('');
+        if (email !== '' && pass !== '') {
+            try {
+                //await sendUserDetails({email, pass});
+                axios.post('', {email, pass})
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err))
+                
+                //console.log("Details successfully sent to backend.");
+
+                setEmail('');
+                setPass('');
+            } catch (error) {
+                console.log("Error sending details:", error);
+            }
+        }
     }
 
     return (
