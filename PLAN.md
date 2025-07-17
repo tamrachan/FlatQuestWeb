@@ -7,6 +7,7 @@
 
 ## Tech Stack (MERN - Mongo, Express, React and Node)
 [MERN Tutorial](https://www.youtube.com/watch?v=ZVyIIyZJutM)
+[MongoDB Official Guide](https://www.mongodb.com/resources/languages/mern-stack-tutorial?utm_campaign=devrel&utm_source=youtube&utm_medium=organic_social&utm_content=4nKWREmCvsE&utm_term=jesse.hall#setting-up-the-react-router)
 
 - **Frontend:** React.js  
   - Collects user data (e.g., username, password)  
