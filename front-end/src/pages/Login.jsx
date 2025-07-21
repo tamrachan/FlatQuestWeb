@@ -24,6 +24,8 @@ function Login() {
             } catch (error) {
                 console.log("Error sending details:", error);
             }
+        } else {
+            alert("Error logging in: Invalid login details.");
         }
     }
 
@@ -32,10 +34,10 @@ function Login() {
             <div className="auth-form-container">
                 <h2>Login</h2>
                 <form className="login-form" onSubmit={handleSubmit}>
-                    <label for="email">Username/Email:</label>
+                    <label htmlFor="email">Username/Email:</label>
                     <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="username or youremail@gmail.com" id="email" name="email" />
                     <br></br>
-                    <label for="password">Password:</label>
+                    <label htmlFor="password">Password:</label>
                     <input value={pass} onChange={(e) => setPass(e.target.value)} type="password" placeholder="***********" id="password" name="password" />
                     <br></br>
                     <button type="submit">Log in</button>

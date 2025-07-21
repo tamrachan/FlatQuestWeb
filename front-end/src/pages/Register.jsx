@@ -23,7 +23,7 @@ function Register() {
             setPass('');
             setName('');
         } else {
-            console.log("Invalid entries");
+            alert("Error creating account: Ensure all entries are valid.");
         }
     }
 
@@ -32,16 +32,16 @@ function Register() {
             <div className="auth-form-container">
                 <h2>Register</h2>
                 <form className="register-form" onSubmit={handleSubmit}>
-                    <label for="name">Full name:</label>
+                    <label htmlFor="name">Full name:</label>
                     <input value={name} onChange={(e) => setName(e.target.value)} type="name" placeholder="Full name" id="name" name="name" />
                     <br></br>
-                    <label for="user">Username:</label>
+                    <label htmlFor="user">Username:</label>
                     <input value={user} onChange={(e) => setUser(e.target.value)} type="user" placeholder="username" id="user" name="user" />
                     <br></br>
-                    <label for="email">Email:</label>
+                    <label htmlFor="email">Email:</label>
                     <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="youremail@gmail.com" id="email" name="email" />
                     <br></br>
-                    <label for="password">Password:</label>
+                    <label htmlFor="password">Password:</label>
                     <input value={pass} onChange={(e) => setPass(e.target.value)} type="password" placeholder="*********" id="password" name="password" />
                     <br></br>
                     <button type="submit">Log in</button>
