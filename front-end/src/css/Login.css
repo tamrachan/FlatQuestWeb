@@ -48,6 +48,7 @@ input {
     border: none;
     border-radius: 10px;
     background-color: whitesmoke;
+    color: black;
 }
 
 button {
