@@ -15,7 +15,7 @@ function Register() {
         console.log(name, user, email, pass);
 
         if (name !== '' && user !== '' && email !== '' && pass !== '') {
-            axios.post('TBC WITH MONGOOSE', {name,user,email, pass})
+            axios.post('http://localhost:5050/register', {name,user,email, pass})
                 .then(result => console.log(result))
                 .catch(err => console.log(err))
 

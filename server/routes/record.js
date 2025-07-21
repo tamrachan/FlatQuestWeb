@@ -9,6 +9,12 @@ import { ObjectId } from "mongodb";
 // Create instance of express router
 const router = express.Router();
 
+async function printAll() {
+    let collection = await db.collection("users");
+    let results = await collection.find({}).toArray();
+    console.log(results);
+}
+
 // GET '/' fetches a list of all the records
 router.get("/", async (req, res) => {
     let collection = await db.collection("users");
@@ -16,8 +22,8 @@ router.get("/", async (req, res) => {
     res.send(results).status(200);
 });
 
-// POST '/' creates a new user in the collection
-router.post("/", async (req, res) => {
+// POST '/register' creates a new user in the collection
+router.post("/register", async (req, res) => {
     try {
         let newDocument = {
             name: req.body.name,
@@ -30,6 +36,8 @@ router.post("/", async (req, res) => {
         
         // Send result
         res.send(result).status(204);
+        console.log("Successfully added user to db");
+        printAll();
     } catch (err) {
         console.error(err);
         res.status(500).send("Error adding record");
@@ -52,6 +60,8 @@ router.patch("/:id", async (req, res) => {
         let collection = await db.collection("users");
         collection.updateOne(query, updates);
         res.send(result).status(200);
+        console.log("Successfully updated");
+
     } catch (err) {
         console.error(err);
         res.status(500).send("Error updating record");
@@ -68,6 +78,8 @@ router.delete("/:id", async (req, res) => {
 
         // Send success message
         res.send(result).status(200);
+
+        console.log("Removed user");
     } catch (err) {
         console.error(err);
         res.status(500).send("Error deleting record");
