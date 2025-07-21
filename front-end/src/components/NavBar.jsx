@@ -10,6 +10,7 @@ function NavBar() {
             <Link to="/" className="nav-link">Home</Link>
             <Link to="/login" className="nav-link">Login</Link>
             <Link to="/register" className="nav-link">Register</Link>
+            <Link to="/flatPage" className="nav-link">FlatPage</Link> {/* temp */}
         </div>
     </nav>
 }
