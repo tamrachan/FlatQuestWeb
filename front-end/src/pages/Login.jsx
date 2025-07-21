@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom"
 import axios from 'axios';
 import "../css/Login.css"
 
@@ -42,7 +43,7 @@ function Login() {
                     <br></br>
                     <button type="submit">Log in</button>
                 </form>
-                <button className="link-btn" onClick={() => props.onFormSwitch("register")}>Don't have an account? Register here!</button>
+                <Link to="/register" className="link-btn">Don't have an account? Register here!</Link>
             </div>
         </div>
         

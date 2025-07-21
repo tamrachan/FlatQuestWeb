@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {Link} from "react-router-dom";
 import axios from 'axios';
 import "../css/Login.css"
 
@@ -46,7 +47,7 @@ function Register() {
                     <br></br>
                     <button type="submit">Log in</button>
                 </form>
-                <button className="link-btn" onClick={() => props.onFormSwitch("login")}>Have an account? Sign in here!</button>
+                <Link to="/login" className="link-btn">Already have an account? Sign in here!</Link>
             </div>
         </div>
     )
