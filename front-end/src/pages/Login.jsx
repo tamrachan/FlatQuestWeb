@@ -14,7 +14,7 @@ function Login() {
         if (email !== '' && pass !== '') {
             try {
                 //await sendUserDetails({email, pass});
-                axios.post('http://localhost:5050/login', {email, pass})
+                axios.post('http://localhost:5050/record/login', {email, pass})
                     .then(result => console.log(result))
                     .catch(err => console.log(err))
                 

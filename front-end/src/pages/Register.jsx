@@ -15,7 +15,7 @@ function Register() {
         console.log(name, user, email, pass);
 
         if (name !== '' && user !== '' && email !== '' && pass !== '') {
-            axios.post('http://localhost:5050/register', {name,user,email, pass})
+            axios.post('http://localhost:5050/record/register', {name,user,email, pass})
                 .then(result => console.log(result))
                 .catch(err => console.log(err))
 
@@ -45,7 +45,7 @@ function Register() {
                     <label htmlFor="password">Password:</label>
                     <input value={pass} onChange={(e) => setPass(e.target.value)} type="password" placeholder="*********" id="password" name="password" />
                     <br></br>
-                    <button type="submit">Log in</button>
+                    <button type="submit">Register</button>
                 </form>
                 <Link to="/login" className="link-btn">Already have an account? Sign in here!</Link>
             </div>
