@@ -23,35 +23,53 @@ function FlatPage() {
 
             <div className="personalTasks">
 
-                <h3>Personal Tasks</h3>
+                <h3 className="sticky">Personal Tasks</h3>
                 <div>personal stuff like do hw</div> {/* ig u should be able to add this so... */}
+                <div>personal stuff like do hw</div>
+                <div>personal stuff like do hw</div>
+                <div>personal stuff like do hw</div>
+                <div>personal stuff like do hw</div>
+                <div>personal stuff like do hw</div>
+                <div>personal stuff like do hw</div>
+                <div>personal stuff like do hw</div>
+                <div>personal stuff like do hw</div>
+
+            </div>
+            <div className="addTask">
 
                 <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
                     <input type="text" placeholder="Add personal tasks here..." name="personalTask" className="inputText" />
-                    <button type="submit" />
+                    <button type="submit">Add</button>
                 </form> 
 
             </div>
 
-        </div>
+            <div className="miniGames">
 
-        <div> 
+                mini game
 
-            <h3>Characters</h3>
+            </div>
 
-            <div className="characters">
+            <div className="characterSection"> 
 
-            <Character name={"Hanaa"} imageSrc={"/icons/red_beach_ball.xcf"} /> {/* i thought to test it, but the pic no work */}
-            <Character name={"Tamra"} imageSrc={""} />
+                <h3>Characters</h3>
 
-            {/* i wanna do some sort of loop that loops through ppl in the flat, n does it with whoever the current person is as the first name, then 
-            alphabetical, but i do not know how to do that conditonal html yet... */}            
+                <div className="characters">
+
+                <Character name={"Hanaa"} imageSrc={"/icons/red_beach_ball.png"} /> {/* i thought to test it, but the pic no work */}
+                <Character name={"Tamra"} imageSrc={""} />
+
+                {/* i wanna do some sort of loop that loops through ppl in the flat, n does it with whoever the current person is as the first name, then 
+                alphabetical, but i do not know how to do that conditonal html yet... */}            
 
 
             </div>
 
             
         </div>
+
+        </div>
+
     </>
 }
 

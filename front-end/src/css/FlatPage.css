@@ -6,8 +6,14 @@
 .gridContainer {
     display: grid;
     grid-template-columns: repeat(8, 1fr);;
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    /* width: 100%;
+    height: 80%; */
     gap: 1rem;
+    max-height: 100vh;
+    overflow: hidden;
+    /* margin-bottom: 1rem;  */
+    /* overflow-y: scroll; Vertical scroll */
 }
 
 .taskBox {
@@ -15,6 +21,9 @@
     background-color: #ADD8E6;
     border: 1px solid gray;
     border-radius: 10px;
+    max-height: 100%;
+    overflow-y: auto;
+    /* overflow-y: scroll; */
 
     grid-column: 1 / 4;
     grid-row: 1 / 5;
@@ -25,6 +34,8 @@
     background-color: #ADD8E6;
     border: 1px solid gray;
     border-radius: 10px;
+    max-height: 100%;
+    overflow-y: auto;
 
     /* grid-column-start: 3;
     grid-column-end: 5;
@@ -39,26 +50,65 @@
     background-color: #ADD8E6;
     border: 1px solid gray;
     border-radius: 10px;
+    max-height: 100%;
+    overflow-y: auto; /* Vertical scroll */
+    /* animation-timeline: scroll(y); */
 
     grid-column: 4 / 7;
-    grid-row: 3 / 5;
+    grid-row: 3 / 4;
 }
 
-.inputtext {
+.sticky {
+    position: sticky;
+    top: 0;
+}
+
+.addTask {
+    grid-column: 4 / 7;
+    grid-row: 4 / 5;
+
+    display: flex;
+    justify-content: flex-start;
+}
+
+.inputText {
     padding: 1rem;
-    width: 90%;
+    /* width: 90%; */
+    /* flex-basis: 100%; */
+    flex: 2 1 0;
 }
 
 button{
     background-color: aquamarine;
     padding: 1rem;
-    align-items: left;
+    /* align-items: right; */
+    /* flex: 2 1 0; */
+}
+
+.miniGames {
+    grid-column: 7 / 8;
+    grid-row: 1 / 2;
+
+    padding: 1rem;
+    background-color: #ADD8E6;
+    border: 1px solid gray;
+    border-radius: 10px;
+    max-height: 100%;
+}
+
+
+
+
+
+.characterSection {
+    grid-column: 1 / 8;
+    grid-row: 5 / 6;
 }
 
 .characters {
     border-style: none;
     width: 100%;
-    height: 30%;
+    max-height: 60%;
     align-items: center;
     background-color: #ADD8E6;
     padding: 1rem;
@@ -76,4 +126,6 @@ button{
 
 img {
   border-radius: 50%; /* make avatar pic a circle */
+  width: 60px;
+  height: 60px;
 }
