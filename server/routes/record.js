@@ -68,6 +68,27 @@ router.patch("/:id", async (req, res) => {
     }
 });
 
+// PATCH '/' updates a record by id
+router.patch("/updateName", async (req, res) => {
+    try {
+        // TODO: GET ID
+        const query = { _id: new ObjectId(req.params.id)};
+        const updates = {
+            $set: {
+                name: req.body.name,
+            }
+        };
+
+        let collection = await db.collection("users");
+        collection.updateOne(query, updates);
+        res.send(result).status(200);
+        console.log("Successfully updated");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error updating record");
+    }
+});
+
 // DELETE '/' deletes a record
 router.delete("/:id", async (req, res) => {
     try {

@@ -50,7 +50,6 @@ function Login() {
                 <Link to="/register" className="link-btn">Don't have an account? Register here!</Link>
             </div>
         </div>
-        
     )
 }
 
