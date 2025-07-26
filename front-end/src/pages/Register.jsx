@@ -7,32 +7,83 @@ function Register() {
     const [email, setEmail] = useState('');
     const [user, setUser] = useState('');
     const [pass, setPass] = useState('');
-    const [name, setName] = useState('')
+    const [name, setName] = useState('');
+    const [role, setRole] = useState('member'); // default to member
+    const [groupCode, setGroupCode] = useState('');
+
+    // Generate random 6-letter code
+    const generateGroupCode = () => {
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        let result = "";
+        for (let i = 0; i < 6; i++) {
+            result += letters.charAt(Math.floor(Math.random() * letters.length));
+        }
+        return result;
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        console.log(name, user, email, pass);
+        if (name && user && email && pass && (role === 'leader' || (role === 'member' && groupCode && groupCode.length === 6))) {
+            // TODO: Check if member groupCode is in the database
+            
 
-        if (name !== '' && user !== '' && email !== '' && pass !== '') {
-            axios.post('http://localhost:5050/record/register', {name,user,email, pass})
-                .then(result => console.log(result))
-                .catch(err => console.log(err))
+            let generatedGroupCode = groupCode;
+            // If leader, auto-generate code
+            if (role === 'leader') {
+                generatedGroupCode = generateGroupCode();
+                setGroupCode(generatedGroupCode);
+            }
+            
+            console.log(name, user, email, pass, role, generatedGroupCode)
+            axios.post('http://localhost:5050/record/register', {
+                name,
+                user,
+                email,
+                pass,
+                role,
+                groupCode: generatedGroupCode
+            })
+            .then(result => console.log(result))
+            .catch(err => console.log(err));
 
             console.log("Valid entries - adding to database");
             setEmail('');
             setPass('');
             setName('');
+            setUser('');
+            setGroupCode('');
         } else {
             alert("Error creating account: Ensure all entries are valid.");
         }
-    }
+    };
 
     return (
         <div className="register">
             <div className="auth-form-container">
                 <h2>Register</h2>
                 <form className="register-form" onSubmit={handleSubmit}>
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                value="leader"
+                                checked={role === 'leader'}
+                                onChange={(e) => setRole(e.target.value)}
+                            />
+                            Group Leader
+                        </label>
+                        <label style={{ marginLeft: "10px" }}>
+                            <input
+                                type="radio"
+                                value="member"
+                                checked={role === 'member'}
+                                onChange={(e) => setRole(e.target.value)}
+                            />
+                            Member (group code)
+                        </label>
+                    </div>
+
                     <label htmlFor="name">Full name:</label>
                     <input value={name} onChange={(e) => setName(e.target.value)} type="name" placeholder="Full name" id="name" name="name" />
                     <br></br>
@@ -44,6 +95,14 @@ function Register() {
                     <br></br>
                     <label htmlFor="password">Password:</label>
                     <input value={pass} onChange={(e) => setPass(e.target.value)} type="password" placeholder="*********" id="password" name="password" />
+                    <br></br>
+                    {role === 'member' && (
+                        <>
+                            <label htmlFor="groupCode">Enter Group Code:</label>
+                            <input value={groupCode} onChange={(e) => setGroupCode(e.target.value.toUpperCase())} type="text" placeholder="6 letter group code" 
+                            id="groupCode" name="groupCode" maxLength={6} />
+                        </>
+                    )}
                     <br></br>
                     <button type="submit">Register</button>
                 </form>
