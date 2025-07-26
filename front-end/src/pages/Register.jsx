@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {Link} from "react-router-dom";
 import axios from 'axios';
 import "../css/Login.css"
+import { useNavigate } from "react-router-dom";
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -10,6 +11,7 @@ function Register() {
     const [name, setName] = useState('');
     const [role, setRole] = useState('member'); // default to member
     const [groupCode, setGroupCode] = useState('');
+    const navigate = useNavigate();
 
     // Generate random 6-letter code
     const generateGroupCode = () => {
@@ -44,7 +46,10 @@ function Register() {
                 role,
                 groupCode: generatedGroupCode
             })
-            .then(result => console.log(result))
+            .then(result => {
+                console.log(result)
+                navigate('/flatpage')
+            })
             .catch(err => console.log(err));
 
             console.log("Valid entries - adding to database");

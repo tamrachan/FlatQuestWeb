@@ -1,4 +1,5 @@
 import "../css/FlatPage.css"
+import redBeachBall from '../icons/red_beach_ball.png';
 
 function FlatPage() {
 
@@ -6,6 +7,7 @@ function FlatPage() {
 
         <div className="title">
         <h1>FlatPage!</h1>
+        <p>Group Code: (get group code)</p>
         </div>
 
         <div className="gridContainer">
@@ -44,20 +46,29 @@ function FlatPage() {
 
             </div>
 
-            <div className="miniGames">
+            <div className="stats">
 
-                mini game
+                <h3>Stats</h3>
+                <div>Tasks to do: (number)</div>
+                <div>Tasks completed: (number)</div>
 
             </div>
 
-            <div className="characterSection"> 
+            <div className="graph">
 
-                <h3>Characters</h3>
+                <h3>Progress</h3>
+                <div>A visual of how many left to do / total for the week</div>
 
-                <div className="characters">
+            </div>
 
-                <Character name={"Hanaa"} imageSrc={"/icons/red_beach_ball.png"} /> {/* i thought to test it, but the pic no work */}
-                <Character name={"Tamra"} imageSrc={""} />
+            <div className="flatmateSection"> 
+
+                <h3>Flatmates</h3>
+
+                <div className="flatmates">
+
+                <Flatmate name={"Hanaa"} imageSrc={redBeachBall} />
+                <Flatmate name={"Tamra"} imageSrc={redBeachBall} />
 
                 {/* i wanna do some sort of loop that loops through ppl in the flat, n does it with whoever the current person is as the first name, then 
                 alphabetical, but i do not know how to do that conditonal html yet... */}            
@@ -81,8 +92,8 @@ function FlatPage() {
 
 // }
 
-function Character({ name, imageSrc }) {
-    return <div className="characterIcon">
+function Flatmate({ name, imageSrc }) {
+    return <div className="flatmateIcon">
         
         <img src={imageSrc} alt="Avatar"></img>
         <figcaption> {name} </figcaption>
