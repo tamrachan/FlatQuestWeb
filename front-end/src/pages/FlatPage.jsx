@@ -1,9 +1,12 @@
 import "../css/FlatPage.css"
+import ProgressBar from "../components/ProgressBar";
 import redBeachBall from '../icons/red_beach_ball.png';
+
 
 function FlatPage() {
 
     return <>
+
 
         <div className="title">
         <h1>FlatPage!</h1>
@@ -74,7 +77,6 @@ function FlatPage() {
 
             </div>
             <div className="addTask">
-
                 <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
                     <input type="text" placeholder="Add personal tasks here..." name="personalTask" className="inputText" />
                     <button type="submit">Add</button>
@@ -94,10 +96,11 @@ function FlatPage() {
 
                 <h3>Progress</h3>
                 <div>A visual of how many left to do / total for the week</div>
+                <ProgressBar progress={50} label="Completed tasks / Total tasks" color="#2196f3" /> {/* Pass in percentage of tasks calculated */}
 
             </div>
 
-            <div className="flatmateSection"> 
+            <div className="flatmate-section"> 
 
                 <h3>Flatmates</h3>
 
@@ -132,7 +135,7 @@ function FlatPage() {
 // }
 
 function Flatmate({ name, imageSrc }) {
-    return <div className="flatmateIcon">
+    return <div className="flatmate-icon">
         
         <img src={imageSrc} alt="Avatar"></img>
         <figcaption> {name} </figcaption>

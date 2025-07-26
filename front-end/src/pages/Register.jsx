@@ -68,24 +68,17 @@ function Register() {
             <div className="auth-form-container">
                 <h2>Register</h2>
                 <form className="register-form" onSubmit={handleSubmit}>
-                    <div>
-                        <label>
-                            <input
-                                type="radio"
-                                value="leader"
-                                checked={role === 'leader'}
-                                onChange={(e) => setRole(e.target.value)}
-                            />
-                            Group Leader
+                    <div class="custom-radio-group">
+                        <label class="custom-radio">
+                            <input type="radio" name="role" value="leader" checked={role === 'leader'} onChange={(e) => setRole(e.target.value)} />
+                            <span class="checkmark"></span>
+                            <span class="label-text">Group Leader</span>
                         </label>
-                        <label style={{ marginLeft: "10px" }}>
-                            <input
-                                type="radio"
-                                value="member"
-                                checked={role === 'member'}
-                                onChange={(e) => setRole(e.target.value)}
-                            />
-                            Member (group code)
+
+                        <label class="custom-radio">
+                            <input type="radio" name="role" value="member" checked={role === 'member'} onChange={(e) => setRole(e.target.value)} />
+                            <span class="checkmark"></span>
+                            <span class="label-text">Member (group code)</span>
                         </label>
                     </div>
 
@@ -118,3 +111,25 @@ function Register() {
 }
 
 export default Register;
+
+{/* CODE GRAVEYARD  
+    <div>
+        <label>
+            <input
+                type="radio"
+                value="leader"
+                checked={role === 'leader'}
+                onChange={(e) => setRole(e.target.value)}
+            />
+            Group Leader
+        </label>
+        <label style={{ marginLeft: "10px" }}>
+            <input
+                type="radio"
+                value="member"
+                checked={role === 'member'}
+                onChange={(e) => setRole(e.target.value)}
+            />
+            Member (group code)
+        </label>
+    </div> */}

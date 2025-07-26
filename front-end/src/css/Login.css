@@ -24,6 +24,64 @@
     background-color: #ADD8E6;
 }
 
+.custom-radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.custom-radio {
+  display: flex;
+  align-items: center;      /* Aligns radio with text vertically */
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+}
+
+.custom-radio input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkmark {
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+  background-color: #eee;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  margin-right: 8px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Show dot inside when checked */
+input:checked ~ .checkmark {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+input:checked ~ .checkmark::after {
+  display: block;
+}
+
+.checkmark::after {
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+
 @media screen and (min-width: 600px) {
     .auth-form-container {
         margin: 0.5rem;

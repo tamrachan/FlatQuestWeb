@@ -4,7 +4,7 @@ import "../css/NavBar.css"
 function NavBar() {
     return <nav className="navbar">
         <div className="navbar-title">
-            <Link to="/">Flat Quest</Link>
+            <Link to="/">FlatQuest</Link>
         </div>
         <div className="navbar-links">
             <Link to="/" className="nav-link">Home</Link>
