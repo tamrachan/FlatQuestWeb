@@ -46,21 +46,32 @@
 }
 
 .personalTasks {
-    padding: 1rem;
-    background-color: #ADD8E6;
-    border: 1px solid gray;
-    border-radius: 10px;
-    max-height: 100%;
-    overflow-y: auto; /* Vertical scroll */
-    /* animation-timeline: scroll(y); */
-
-    grid-column: 4 / 7;
-    grid-row: 2 / 4;
+  padding: 1rem;
+  background-color: #ADD8E6;
+  border: 1px solid gray;
+  border-radius: 10px;
+  max-height: 100%; /* Limit total height */
+  display: flex;
+  flex-direction: column;
+  grid-column: 4 / 7;
+  grid-row: 2 / 4;
+  overflow: hidden; /* Prevent extra scrollbars */
 }
 
 .sticky {
-    position: sticky;
-    top: 0;
+  background-color: #ADD8E6; /* Match background */
+  padding: 0.5rem;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid gray;
+}
+
+.taskList {
+  overflow-y: auto;
+  flex: 1;
+  padding: 0.5rem 0;
 }
 
 .addTask {

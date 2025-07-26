@@ -26,15 +26,51 @@ function FlatPage() {
             <div className="personalTasks">
 
                 <h3 className="sticky">Personal Tasks</h3>
-                <div>personal stuff like do hw</div> {/* ig u should be able to add this so... */}
-                <div>personal stuff like do hw</div>
-                <div>personal stuff like do hw</div>
-                <div>personal stuff like do hw</div>
-                <div>personal stuff like do hw</div>
-                <div>personal stuff like do hw</div>
-                <div>personal stuff like do hw</div>
-                <div>personal stuff like do hw</div>
-                <div>personal stuff like do hw</div>
+                <div className="taskList">
+                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
+                        <label className="taskList">
+                            <input type="checkbox" name="taskDone" />
+                            Personal things to do
+                        </label>
+                    </form> 
+                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
+                        <label className="taskList">
+                            <input type="checkbox" name="taskDone" />
+                            Personal things to do
+                        </label>
+                    </form> 
+                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
+                        <label className="taskList">
+                            <input type="checkbox" name="taskDone" />
+                            Personal things to do
+                        </label>
+                    </form> 
+                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
+                        <label className="taskList">
+                            <input type="checkbox" name="taskDone" />
+                            Personal things to do
+                        </label>
+                    </form> 
+                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
+                        <label className="taskList">
+                            <input type="checkbox" name="taskDone" />
+                            Personal things to do
+                        </label>
+                    </form> 
+                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
+                        <label className="taskList">
+                            <input type="checkbox" name="taskDone" />
+                            Personal things to do
+                        </label>
+                    </form> 
+                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
+                        <label className="taskList">
+                            <input type="checkbox" name="taskDone" />
+                            Personal things to do
+                        </label>
+                    </form> 
+                </div>
+
 
             </div>
             <div className="addTask">
@@ -68,7 +104,10 @@ function FlatPage() {
                 <div className="flatmates">
 
                 <Flatmate name={"Hanaa"} imageSrc={redBeachBall} />
-                <Flatmate name={"Tamra"} imageSrc={redBeachBall} />
+                <Flatmate name={"Yi Xin"} imageSrc={redBeachBall} />
+                <Flatmate name={"Thy"} imageSrc={redBeachBall} />
+                <Flatmate name={"Freya"} imageSrc={redBeachBall} />
+                <Flatmate name={"Zoya"} imageSrc={redBeachBall} />
 
                 {/* i wanna do some sort of loop that loops through ppl in the flat, n does it with whoever the current person is as the first name, then 
                 alphabetical, but i do not know how to do that conditonal html yet... */}            
