@@ -6,6 +6,8 @@ import db from "../db/connection.js";
 // To convert id from string to ObjectId
 import { ObjectId } from "mongodb";
 
+import bcrypt from "bcryptjs";
+
 // Create instance of express router
 const router = express.Router();
 
@@ -25,12 +27,17 @@ router.get("/", async (req, res) => {
 // POST '/register' creates a new user in the collection
 router.post("/register", async (req, res) => {
     try {
+        const hashedPassword = await bcrypt.hash(req.body.pass, 10);
+        console.log("User: " + req.body.user + " Hashed: " + hashedPassword);
         let newDocument = {
             name: req.body.name,
             user: req.body.user,
             email: req.body.email,
-            pass: req.body.pass,
+            pass: hashedPassword,
+            role: req.body.role,
+            code: req.body.groupCode
         };
+
         let collection = await db.collection("users");
         let result = await collection.insertOne(newDocument);
         
@@ -42,6 +49,19 @@ router.post("/register", async (req, res) => {
         console.error(err);
         res.status(500).send("Error adding record");
     }
+});
+
+// NOT TESTED
+router.post('/login', async (req, res) => {
+  const { email, pass } = req.body;
+
+  const user = users.find(user => user.email === email || user.user === email);
+
+  if (!user || !(await bcrypt.compare(pass, user.pass))) {
+    return res.status(401).json({ message: 'Invalid email or password' });
+  }
+
+  res.status(200).json({ message: 'Signin successful', user: { username: user.username, email: user.email } });
 });
 
 // PATCH '/' updates a record by id
