@@ -51,17 +51,28 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// NOT TESTED
+// i dont think the encryption works, the login works but gets 500's periodically
 router.post('/login', async (req, res) => {
   const { email, pass } = req.body;
 
-  const user = users.find(user => user.email === email || user.user === email);
+  let collection = await db.collection("users");
+  const user = collection.find(user => user.email === email || user.user === email)
+//   .then(user => {
+//     if (!user) { // do we even need this? itd throw an error anyway if user is not found...
+//       return res.status(401).json({ message: 'Invalid email or password', email, pass });
+//     }
+//   })
 
-  if (!user || !(await bcrypt.compare(pass, user.pass))) {
-    return res.status(401).json({ message: 'Invalid email or password' });
-  }
-
-  res.status(200).json({ message: 'Signin successful', user: { username: user.username, email: user.email } });
+  bcrypt.compare(pass, user.pass, (err, isMatch) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error comparing passwords', error: err });
+    }
+    if (isMatch) {
+      return res.status(200).json({ message: 'Signin successful', user: { username: user.username, email: user.email } });
+    } else {
+        return res.status(401).json({ message: 'Invalid email or password'});
+    }
+  })
 });
 
 // PATCH '/' updates a record by id
