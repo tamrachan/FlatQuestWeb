@@ -29,6 +29,7 @@ function Register() {
         if (name && user && email && pass && (role === 'leader' || (role === 'member' && groupCode && groupCode.length === 6))) {
             // TODO: Check if member groupCode is in the database
             
+            let flatPagePath = '/flatpage/' + {email};
 
             let generatedGroupCode = groupCode;
             // If leader, auto-generate code
@@ -48,7 +49,8 @@ function Register() {
             })
             .then(result => {
                 console.log(result)
-                navigate('/flatpage')
+                // let flatPagePath = '/flatpage/' + {email};
+                navigate(flatPagePath); // Redirect to FlatPage with username using state, but not work: , {state: { username: user, groupCode: groupCode } }
             })
             .catch(err => console.log(err));
 

@@ -2,15 +2,35 @@ import "../css/FlatPage.css"
 import ProgressBar from "../components/ProgressBar";
 import redBeachBall from '../icons/red_beach_ball.png';
 
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
+import axios from "axios";
+
 
 function FlatPage() {
+    const params = useParams();
+
+    console.log(params.username, "username"); 
+
+    // get stuff from database, like groupcode 
+    const [user, setUser] = useState([]);
+    useEffect(() => {
+        axios.get(`http://localhost:5050/record/flatpage/${params.username}`)
+            .then(user => setUser(user.data))
+            .catch(err => console.log(err))
+    }, []);
+
+    console.log(user);
 
     return <>
 
-
         <div className="title">
         <h1>FlatPage!</h1>
-        <p>Group Code: (get group code)</p>
+        <p>Group Code: (get group code)  </p>
+        <p>Welcome, {params.username}
+            {/* {user.user} {user.pass} */}
+        </p>
         </div>
 
         <div className="gridContainer">

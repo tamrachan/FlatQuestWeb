@@ -24,7 +24,7 @@ function App() {
                     <Route path='/' element={<Home />} />
                     <Route path='/register' element={<Register />} />
                     <Route path='/login' element={<Login />} />
-                    <Route path='/flatpage' element={<FlatPage />} />
+                    <Route path='/flatpage/:username' element={<FlatPage />} /> {/* username is a parameter in the URL */}
                     <Route path='/games' element={<Games />} />
                     <Route path='/details' element={<EditDetails />} />
                 </Routes>

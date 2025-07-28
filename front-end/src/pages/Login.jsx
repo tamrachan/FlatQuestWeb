@@ -19,7 +19,8 @@ function Login() {
                 axios.post('http://localhost:5050/record/login', {email, pass})
                     .then(result => {
                         console.log("Login successful:", result);
-                        navigate('/flatpage'); // Redirect to home
+                        let flatPagePath = '/flatpage/' + {email};
+                        navigate(flatPagePath); // Redirect to home
                     })
                     .catch(err => console.log(err))
                 
