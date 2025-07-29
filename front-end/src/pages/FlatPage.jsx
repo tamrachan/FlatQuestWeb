@@ -19,9 +19,8 @@ function FlatPage() {
     
     return <>
         <div className="title">
-            <h1>FlatPage!</h1>
+            <h1>{user?.user}'s FlatPage!</h1>
             <p>Group Code: {user?.code}</p>
-            <p>Welcome {user?.user}!</p>
         </div>
 
         <div className="gridContainer">

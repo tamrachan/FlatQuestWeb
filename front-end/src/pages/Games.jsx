@@ -1,11 +1,25 @@
 import "../css/Games.css"
 import redBeachBall from '../icons/red_beach_ball.png';
+import { useContext, useEffect } from "react";
+import { UserContext } from "../components/UserContext";
+import { useNavigate } from "react-router-dom";
 
 function Games() {
+    const { user } = useContext(UserContext);
+    const navigate = useNavigate();
+    
+    // If user is not defined, send back to login page
+    useEffect(() => {
+    if (!user) {
+        navigate('/login');
+        }
+    }, [user, navigate]);
 
     return (
         <div className="game-menu">
             <h1>Mini games</h1>
+
+            <p>{user?.user}'s score: 0</p>
             
             <p>Add mini games here</p>
             <div className="game-grid">

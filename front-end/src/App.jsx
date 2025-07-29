@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import FlatPageNavBar from './components/FlatPageNavBar';
 import Home from './pages/Home';
@@ -8,7 +8,7 @@ import FlatPage from './pages/FlatPage';
 import Games from './pages/Games';
 import EditDetails from './pages/EditDetails';
 import './css/App.css';
-import { UserProvider } from './components/UserContext';
+
 
 function App() {
     const location = useLocation();
@@ -28,6 +28,7 @@ function App() {
                     <Route path='/flatpage' element={<FlatPage />} />
                     <Route path='/games' element={<Games />} />
                     <Route path='/details' element={<EditDetails />} />
+                    <Route path='*' element={<Navigate to='/' replace />} /> {/* Redirects unknown routes to homepage */}
                 </Routes>
             </main>
         </div>

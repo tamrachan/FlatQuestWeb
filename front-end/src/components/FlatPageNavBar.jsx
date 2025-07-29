@@ -4,7 +4,7 @@ import "../css/NavBar.css"
 function FlatPageNavBar() {
     return <nav className="navbar">
         <div className="navbar-title">
-            <Link to="/">FlatQuest</Link>
+            <h3>FlatQuest</h3>
         </div>
         <div className="navbar-links">
             <Link to="/flatpage" className="nav-link">FlatPage</Link>
