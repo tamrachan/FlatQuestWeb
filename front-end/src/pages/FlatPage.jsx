@@ -10,6 +10,7 @@ import axios from "axios";
 
 function FlatPage() {
     const params = useParams();
+    const { username } = useParams(); // Same but shorthand hypothetically?
 
     console.log(params.username, "username"); 
 
@@ -28,7 +29,7 @@ function FlatPage() {
         <div className="title">
         <h1>FlatPage!</h1>
         <p>Group Code: (get group code)  </p>
-        <p>Welcome, {params.username}
+        <p>Welcome, {params.username}, {username}!
             {/* {user.user} {user.pass} */}
         </p>
         </div>
