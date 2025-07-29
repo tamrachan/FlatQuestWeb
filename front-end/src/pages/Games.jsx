@@ -28,6 +28,7 @@ function Games() {
                     <h4>2 players</h4>
                     <img className="game-img" src={redBeachBall}></img>
                     <p className="game-desc">Battle it out over a two-player TicTacToe game</p>
+                    {/* TODO: make button link to game */}
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import FlatPage from './pages/FlatPage';
 import Games from './pages/Games';
+import TicTacToe from './games/TicTacToe';
 import EditDetails from './pages/EditDetails';
 import './css/App.css';
 
@@ -27,6 +28,7 @@ function App() {
                     <Route path='/login' element={<Login />} />
                     <Route path='/flatpage' element={<FlatPage />} />
                     <Route path='/games' element={<Games />} />
+                    <Route path='/games/TicTacToe' element={<TicTacToe />} />
                     <Route path='/details' element={<EditDetails />} />
                     <Route path='*' element={<Navigate to='/' replace />} /> {/* Redirects unknown routes to homepage */}
                 </Routes>
