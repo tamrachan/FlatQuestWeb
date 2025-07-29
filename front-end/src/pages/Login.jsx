@@ -1,30 +1,40 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import "../css/Login.css"
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../components/UserContext";
 
 function Login() {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     const navigate = useNavigate();
+    const { setUser } = useContext(UserContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(email, pass);
 
         if (email !== '' && pass !== '') {
             try {
                 //await sendUserDetails({email, pass});
                 axios.post('http://localhost:5050/record/login', {email, pass})
                     .then(result => {
-                        console.log("Login successful:", result);
-                        let flatPagePath = `/flatpage/${email}`;
-                        navigate(flatPagePath); // Redirect to home
+                        const userData = result.data.user;  // get user object from response
+
+                        setUser({
+                            name: userData.name,
+                            user: userData.username,
+                            email: userData.email,
+                            role: userData.role,
+                            code: userData.code
+                        });
+
+                        navigate('/flatpage')
                     })
-                    .catch(err => console.log(err))
+                    .catch(err => {
+                        alert('Invalid login');
+                    })
                 
-                //console.log("Details successfully sent to backend.");
                 setEmail('');
                 setPass('');
             } catch (error) {

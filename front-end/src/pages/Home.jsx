@@ -13,7 +13,6 @@ function Home() {
                 Whether you're in a student flat, shared house, or co-living space, we help you and your flatmates stay organised—and maybe even enjoy doing chores.
             </p><br></br>
             <h3>How it works:</h3>
-            <p className="home-p">
                 <ul>
                     <li>Join your flat with a <strong>group code</strong> and unlock your shared space as a team.</li>
                     <li>Assign a <strong>Flat Leader</strong> to help organise tasks and keep things moving.</li>
@@ -22,7 +21,7 @@ function Home() {
                     <li><strong>Solve Disputes with Games</strong> – Can't agree who should take the bins out? Let a game decide!</li>
                     <li><strong>Level Up Your Flat</strong> – Earn rewards, complete quests, and become the ultimate flatmate squad.</li>
                 </ul>
-            </p><br></br>
+            <br></br>
             <h3>Why FlatQuest?</h3>
             <p className="home-p">
                 No more passive-aggressive sticky notes. <br></br>

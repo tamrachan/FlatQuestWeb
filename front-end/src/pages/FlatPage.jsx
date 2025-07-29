@@ -1,37 +1,27 @@
 import "../css/FlatPage.css"
 import ProgressBar from "../components/ProgressBar";
 import redBeachBall from '../icons/red_beach_ball.png';
-
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { useState } from "react";
-import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../components/UserContext";
 
 function FlatPage() {
-    const params = useParams();
-    const { username } = useParams(); // Same but shorthand hypothetically?
+    const { user } = useContext(UserContext);
+    const navigate = useNavigate();
+    console.log("User in FlatPage:", user);
 
-    console.log(params.username, "username"); 
-
-    // get stuff from database, like groupcode 
-    const [user, setUser] = useState([]);
+    // If user is not defined, send back to login page
     useEffect(() => {
-        axios.get(`http://localhost:5050/record/flatpage/${params.username}`)
-            .then(user => setUser(user.data))
-            .catch(err => console.log(err))
-    }, []);
-
-    console.log(user);
-
+    if (!user) {
+        navigate('/login');
+        }
+    }, [user, navigate]);
+    
     return <>
-
         <div className="title">
-        <h1>FlatPage!</h1>
-        <p>Group Code: (get group code)  </p>
-        <p>Welcome, {params.username}, {username}!
-            {/* {user.user} {user.pass} */}
-        </p>
+            <h1>FlatPage!</h1>
+            <p>Group Code: {user?.code}</p>
+            <p>Welcome {user?.user}!</p>
         </div>
 
         <div className="gridContainer">
