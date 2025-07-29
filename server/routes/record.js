@@ -156,17 +156,20 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
-// NOT SURE IF ITS WORKING
+// NOT SURE how to test
 // GET fetches a list of the records for that specific username
 router.get("/flatpage/:username", async (req, res) => { 
     let collection = await db.collection("users");
-    let results = await collection.find({ "user": req.params.username }) // check the acc records stuff, get the value of username blah
-    .toArray()  
-    .catch(err => {
-        console.error("Error fetching records:", err);
-        res.status(500).send("Error fetching records");
-    });
-    res.send(results).status(200);
+    let results = await collection.find({$or: [ {"user": req.params.username}, {"email": req.params.username} ]})
+    // .toArray()
+    .then(user => res.json(user))
+    .catch(err => res.json(err))
+    // .toArray()  
+    // .catch(err => {
+    //     console.error("Error fetching records:", err);
+    //     res.status(500).send("Error fetching records");
+    // });
+    // res.send(results).status(200);
 });
 
 export default router;

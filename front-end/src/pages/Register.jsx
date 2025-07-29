@@ -49,8 +49,8 @@ function Register() {
             })
             .then(result => {
                 console.log(result)
-                // let flatPagePath = '/flatpage/' + {email};
-                navigate(flatPagePath); // Redirect to FlatPage with username using state, but not work: , {state: { username: user, groupCode: groupCode } }
+                let flatPagePath = '/flatpage/' + {email};
+                navigate(flatPagePath);
             })
             .catch(err => console.log(err));
 
