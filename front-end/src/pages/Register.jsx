@@ -28,8 +28,6 @@ function Register() {
 
         if (name && user && email && pass && (role === 'leader' || (role === 'member' && groupCode && groupCode.length === 6))) {
             // TODO: Check if member groupCode is in the database
-            
-            let flatPagePath = '/flatpage/' + {email};
 
             let generatedGroupCode = groupCode;
             // If leader, auto-generate code

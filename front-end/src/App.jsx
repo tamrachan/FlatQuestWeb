@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import FlatPage from './pages/FlatPage';
 import Games from './pages/Games';
 import EditDetails from './pages/EditDetails';
+import ForgotPass from './pages/ForgotPass';
 import './css/App.css';
 
 
@@ -28,6 +29,7 @@ function App() {
                     <Route path='/flatpage' element={<FlatPage />} />
                     <Route path='/games' element={<Games />} />
                     <Route path='/details' element={<EditDetails />} />
+                    <Route path='/forgotpassword' element={<ForgotPass />} />
                     <Route path='*' element={<Navigate to='/' replace />} /> {/* Redirects unknown routes to homepage */}
                 </Routes>
             </main>
