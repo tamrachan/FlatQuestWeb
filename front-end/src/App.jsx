@@ -16,7 +16,7 @@ function App() {
     const location = useLocation();
 
     // Define routes where you want the alternate navbar
-    const showDashboardNav = location.pathname === '/flatpage' || location.pathname ==='/games' || location.pathname === '/details';
+    const showDashboardNav = location.pathname === '/flatpage' || location.pathname.startsWith('/games') || location.pathname === '/details';
 
     return (
         <div className="App">
@@ -29,7 +29,7 @@ function App() {
                     <Route path='/login' element={<Login />} />
                     <Route path='/flatpage' element={<FlatPage />} />
                     <Route path='/games' element={<Games />} />
-                    <Route path='/games/TicTacToe' element={<TicTacToe />} />
+                    <Route path='/games/tictactoe' element={<TicTacToe />} />
                     <Route path='/details' element={<EditDetails />} />
                     <Route path='/forgotpassword' element={<ForgotPass />} />
                     <Route path='*' element={<Navigate to='/' replace />} /> {/* Redirects unknown routes to homepage */}

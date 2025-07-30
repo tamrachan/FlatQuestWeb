@@ -7,13 +7,17 @@ import { useNavigate } from "react-router-dom";
 function Games() {
     const { user } = useContext(UserContext);
     const navigate = useNavigate();
-    
+
     // If user is not defined, send back to login page
     useEffect(() => {
     if (!user) {
         navigate('/login');
         }
     }, [user, navigate]);
+
+    const goToGame = () => {
+        navigate("/games/tictactoe");
+    };
 
     return (
         <div className="game-menu">
@@ -22,7 +26,7 @@ function Games() {
             <p>{user?.user}'s score: 0</p>
             
             <p>Add mini games here</p>
-            <div className="game-grid">
+            <div className="game-grid" onClick={goToGame} style={{ cursor: "pointer" }}>
                 <div className="game-card">
                     <h3>TicTacToe</h3>
                     <h4>2 players</h4>
