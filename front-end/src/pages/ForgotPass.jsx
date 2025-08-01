@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import "../css/ForgotPass.css";
 
 function ForgotPass() {
     const [email, setEmail] = useState('');
@@ -77,7 +78,7 @@ function ForgotPass() {
     };
 
     return (
-        <div className="forgot-pass">
+        <div className="forgot-pass-container">
             <form className="email-form" onSubmit={sendEmail}>
                 <label htmlFor="email">Enter email:</label>
                 <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="youremail@gmail.com" id="email" name="email" />

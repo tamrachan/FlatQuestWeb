@@ -1,0 +1,29 @@
+.forgot-pass-container {
+    text-align: center;
+    display: flex;
+    min-height: 100vh;
+    align-items: top; /* Places in centre of page */
+    justify-content: center;
+    font-family: Calibri;
+    font-size: large;
+    padding: 1rem;
+    background-color: #ADD8E6;
+}
+
+input {
+    margin: 0.25rem 0;
+    padding: 1rem;
+    color: black;
+    border: 1rem;
+    border-color: gray;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    
+}
+
+button {
+    border: none;
+    background-color: lightgray;
+    padding: 20px;
+    border-radius: 10px;
+}

@@ -46,39 +46,40 @@ router.post("/register", async (req, res) => {
         const email_exists = await emailExists(req.body.email);
         if (email_exists) {
             console.log("Email already exists.");
-            res.status(500).send("Email already exists");
+            res.status(400).send("Email already exists");
         }
         console.log("email is available");
 
         const valid_group_code = await groupCodeExists(req.body.groupCode);
         if (req.body.role == "member" && !valid_group_code) {
             console.log("Group code does not exist.");
-            res.status(500).send("Group code does not exist");
+            res.status(400).send("Group code does not exist");
         }
 
         if (req.body.role == "leader" && valid_group_code) {
             console.log("Group code shouldn't exist - regenerate one.");
-            res.status(500).send("Group code already exists");
+            res.status(400).send("Group code already exists");
         }
         console.log("email is available");
 
         console.log("User: " + req.body.user + " Hashed: " + hashedPassword);
-        // let newDocument = {
-        //     name: req.body.name,
-        //     user: req.body.user,
-        //     email: req.body.email,
-        //     pass: hashedPassword,
-        //     role: req.body.role,
-        //     code: req.body.groupCode
-        // };
-
-        // let collection = await db.collection("users");
-        // let result = await collection.insertOne(newDocument);
         
-        // // Send result
-        // res.send(result).status(204);
-        // console.log("Successfully added user to db");
-        // printAll();
+        let newDocument = {
+            name: req.body.name,
+            user: req.body.user,
+            email: req.body.email,
+            pass: hashedPassword,
+            role: req.body.role,
+            code: req.body.groupCode
+        };
+
+        let collection = await db.collection("users");
+        let result = await collection.insertOne(newDocument);
+        
+        // Send result
+        res.send(result).status(204);
+        console.log("Successfully added user to db");
+        printAll();
     } catch (err) {
         console.error(err);
         res.status(500).send("Error adding record");

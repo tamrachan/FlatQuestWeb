@@ -49,7 +49,10 @@ function Register() {
                 console.log(result)
                 navigate(flatPagePath);
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                alert(err);
+                console.log(err);
+            });
 
             console.log("Valid entries - adding to database");
             setEmail('');
