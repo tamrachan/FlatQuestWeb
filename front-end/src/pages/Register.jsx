@@ -47,7 +47,6 @@ function Register() {
             })
             .then(result => {
                 console.log(result)
-                let flatPagePath = '/flatpage/' + {email};
                 navigate(flatPagePath);
             })
             .catch(err => console.log(err));
@@ -68,17 +67,17 @@ function Register() {
             <div className="auth-form-container">
                 <h2>Register</h2>
                 <form className="register-form" onSubmit={handleSubmit}>
-                    <div class="custom-radio-group">
-                        <label class="custom-radio">
+                    <div className="custom-radio-group">
+                        <label className="custom-radio">
                             <input type="radio" name="role" value="leader" checked={role === 'leader'} onChange={(e) => setRole(e.target.value)} />
-                            <span class="checkmark"></span>
-                            <span class="label-text">Group Leader</span>
+                            <span className="checkmark"></span>
+                            <span className="label-text">Group Leader</span>
                         </label>
 
-                        <label class="custom-radio">
+                        <label className="custom-radio">
                             <input type="radio" name="role" value="member" checked={role === 'member'} onChange={(e) => setRole(e.target.value)} />
-                            <span class="checkmark"></span>
-                            <span class="label-text">Member (group code)</span>
+                            <span className="checkmark"></span>
+                            <span className="label-text">Member (group code)</span>
                         </label>
                     </div>
 
