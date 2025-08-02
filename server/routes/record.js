@@ -31,11 +31,45 @@ async function emailExists(email) {
     return user !== null;
 }
 
+async function usernameExists(user) {
+    const collection = await db.collection("users");
+    const user = await collection.findOne({ user: user });
+
+    return user !== null;
+}
+
 async function groupCodeExists(code) {
     const collection = await db.collection("users");
     const groupCode = await collection.findOne({ code: code });
 
     return groupCode !== null;
+}
+
+// Not tested yet
+async function passwordValidation(pass) {
+    // // At least one lowercase, one uppercase, one digit, minimum 8 characters
+    // const pattern = ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$;
+    // if (pattern.test(pass)) {
+    //     return true;
+    // }
+    // // return false;
+    
+    if (pass.length < 8) {
+        return false;
+    }
+    if (!/[A-Z]/.test(pass)) {
+        return false;
+    }   
+    if (!/[a-z]/.test(pass)) {
+        return false;
+    }  
+    if (!/[0-9]/.test(pass)) {
+        return false;
+    }
+    if (!/\W|_/g.test(pass) ) { // /[!@#$%^&*(),.?":{}|<>]/.test(pass)) { 
+        return false;
+    }
+    return true;
 }
 
 // POST '/register' creates a new user in the collection
@@ -49,6 +83,12 @@ router.post("/register", async (req, res) => {
             res.status(400).send("Email already exists");
         }
         console.log("email is available");
+
+        const username_exists = await usernameExists(req.body.user);
+        if (username_exists) {
+            console.log("Username already exists.");
+            res.status(400).send("Username already exists");
+        }
 
         const valid_group_code = await groupCodeExists(req.body.groupCode);
         if (req.body.role == "member" && !valid_group_code) {
