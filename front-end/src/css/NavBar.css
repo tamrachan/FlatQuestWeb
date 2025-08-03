@@ -49,3 +49,7 @@ p {
     padding: 0.5rem;
   }
 }
+
+.logout-button {
+  background-color: transparent;
+}

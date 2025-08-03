@@ -48,28 +48,31 @@ async function groupCodeExists(code) {
 // Not tested yet
 async function passwordValidation(pass) {
     // // At least one lowercase, one uppercase, one number, minimum 8 characters
-    const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-    if (pattern.test(pass)) {
-        return true;
-    }
-    return false;
+    // const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    // if (pattern.test(pass)) {
+    //     console.log(pass + " is a valid password");
+    //     return true;
+    // }
+    // console.log(pass + " is not a valid password");
+    // return false;
     
-    // if (pass.length < 8) {
-    //     return false;
-    // }
-    // if (!/[A-Z]/.test(pass)) {
-    //     return false;
-    // }   
-    // if (!/[a-z]/.test(pass)) {
-    //     return false;
-    // }  
-    // if (!/[0-9]/.test(pass)) {
-    //     return false;
-    // }
-    // if (!/[!@#$%^&*(),.?":{}|<>]/.test(pass)) { // /\W|_/g.test(pass) ) { // 
-    //     return false;
-    // }
-    // return true;
+    if (pass.length < 8) {
+        return false;
+    }
+    if (!/[A-Z]/.test(pass)) {
+        return false;
+    }   
+    if (!/[a-z]/.test(pass)) {
+        return false;
+    }  
+    if (!/[0-9]/.test(pass)) {
+        return false;
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(pass)) { // /\W|_/g.test(pass) ) { // 
+        return false;
+    }
+    console.log(pass + " is a valid password");
+    return true;
 }
 
 // POST '/register' creates a new user in the collection

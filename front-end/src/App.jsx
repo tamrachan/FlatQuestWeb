@@ -11,9 +11,21 @@ import EditDetails from './pages/EditDetails';
 import ForgotPass from './pages/ForgotPass';
 import './css/App.css';
 
+import { useEffect, useContext } from "react";
+import { UserContext } from "./components/UserContext";
+
 
 function App() {
     const location = useLocation();
+    const isLoggedIn = localStorage.getItem("keepLoggedIn");
+
+    const { setUser } = useContext(UserContext);
+    useEffect(() => {
+        const storedUser = localStorage.getItem("userData");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, [setUser]);
 
     // Define routes where you want the alternate navbar
     const showDashboardNav = location.pathname === '/flatpage' || location.pathname.startsWith('/games') || location.pathname === '/details';
@@ -24,7 +36,7 @@ function App() {
 
             <main className="main-content">
                 <Routes>
-                    <Route path='/' element={<Home />} />
+                    <Route path='/' element={isLoggedIn?<Navigate to={"/flatpage"}/>: <Home />} />
                     <Route path='/register' element={<Register />} />
                     <Route path='/login' element={<Login />} />
                     <Route path='/flatpage' element={<FlatPage />} />

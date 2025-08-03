@@ -29,6 +29,14 @@ function Login() {
                             code: userData.code
                         });
 
+                        localStorage.setItem("keepLoggedIn", true);
+                        localStorage.setItem("userData", JSON.stringify({
+                            name: userData.name,
+                            user: userData.username,
+                            email: userData.email,
+                            role: userData.role,
+                            code: userData.code
+                        }));
                         navigate('/flatpage')
                     })
                     .catch(err => {
