@@ -47,7 +47,7 @@ function Register() {
             })
             .then(result => {
                 console.log(result)
-                navigate(flatPagePath);
+                navigate('/flatpage/');
             })
             .catch(err => {
                 alert(err);

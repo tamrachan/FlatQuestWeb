@@ -26,16 +26,16 @@ router.get("/", async (req, res) => {
 
 async function emailExists(email) {
     const collection = await db.collection("users");
-    const user = await collection.findOne({ email: email });
+    const dbEmail = await collection.findOne({ email: email });
 
-    return user !== null;
+    return dbEmail !== null;
 }
 
 async function usernameExists(user) {
     const collection = await db.collection("users");
-    const user = await collection.findOne({ user: user });
+    const dbUser = await collection.findOne({ user: user });
 
-    return user !== null;
+    return dbUser !== null;
 }
 
 async function groupCodeExists(code) {
@@ -47,34 +47,41 @@ async function groupCodeExists(code) {
 
 // Not tested yet
 async function passwordValidation(pass) {
-    // // At least one lowercase, one uppercase, one digit, minimum 8 characters
-    // const pattern = ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$;
-    // if (pattern.test(pass)) {
-    //     return true;
-    // }
-    // // return false;
+    // // At least one lowercase, one uppercase, one number, minimum 8 characters
+    const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    if (pattern.test(pass)) {
+        return true;
+    }
+    return false;
     
-    if (pass.length < 8) {
-        return false;
-    }
-    if (!/[A-Z]/.test(pass)) {
-        return false;
-    }   
-    if (!/[a-z]/.test(pass)) {
-        return false;
-    }  
-    if (!/[0-9]/.test(pass)) {
-        return false;
-    }
-    if (!/\W|_/g.test(pass) ) { // /[!@#$%^&*(),.?":{}|<>]/.test(pass)) { 
-        return false;
-    }
-    return true;
+    // if (pass.length < 8) {
+    //     return false;
+    // }
+    // if (!/[A-Z]/.test(pass)) {
+    //     return false;
+    // }   
+    // if (!/[a-z]/.test(pass)) {
+    //     return false;
+    // }  
+    // if (!/[0-9]/.test(pass)) {
+    //     return false;
+    // }
+    // if (!/[!@#$%^&*(),.?":{}|<>]/.test(pass)) { // /\W|_/g.test(pass) ) { // 
+    //     return false;
+    // }
+    // return true;
 }
 
 // POST '/register' creates a new user in the collection
 router.post("/register", async (req, res) => {
     try {
+
+        const password = await passwordValidation(req.body.pass);
+        if ( ! password ) {
+            console.log("Password not valid.");
+            res.status(400).send("password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
+        }
+
         const hashedPassword = await bcrypt.hash(req.body.pass, 10);
 
         const email_exists = await emailExists(req.body.email);
