@@ -79,7 +79,7 @@ router.post("/register", async (req, res) => {
         const password = await passwordValidation(req.body.pass);
         if ( ! password ) {
             console.log("Password not valid.");
-            res.status(400).send("password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
+            return res.status(400).send("password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
         }
 
         const hashedPassword = await bcrypt.hash(req.body.pass, 10);
@@ -87,25 +87,25 @@ router.post("/register", async (req, res) => {
         const email_exists = await emailExists(req.body.email);
         if (email_exists) {
             console.log("Email already exists.");
-            res.status(400).send("Email already exists");
+            return res.status(400).send("Email already exists");
         }
         console.log("email is available");
 
         const username_exists = await usernameExists(req.body.user);
         if (username_exists) {
             console.log("Username already exists.");
-            res.status(400).send("Username already exists");
+            return res.status(400).send("Username already exists");
         }
 
         const valid_group_code = await groupCodeExists(req.body.groupCode);
         if (req.body.role == "member" && !valid_group_code) {
             console.log("Group code does not exist.");
-            res.status(400).send("Group code does not exist");
+            return res.status(400).send("Group code does not exist");
         }
 
         if (req.body.role == "leader" && valid_group_code) {
             console.log("Group code shouldn't exist - regenerate one.");
-            res.status(400).send("Group code already exists");
+            return res.status(400).send("Group code already exists");
         }
         console.log("email is available");
 
