@@ -7,12 +7,13 @@ import { UserContext } from "../components/UserContext";
 
 function FlatPage() {
     const { user } = useContext(UserContext);
+    const userData = localStorage.getItem("userData"); 
     const navigate = useNavigate();
     console.log("User in FlatPage:", user);
 
     // If user is not defined, send back to login page
     useEffect(() => {
-    if (!user) {
+    if (!userData) {
         navigate('/login');
         }
     }, [user, navigate]);
