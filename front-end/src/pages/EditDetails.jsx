@@ -1,21 +1,9 @@
-// TODO: Create a page so users can edit their details
-import "../css/Login.css"
-import { useState } from "react";
-import { useContext, useEffect } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../components/UserContext";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 function EditDetails() {
     const { user } = useContext(UserContext);
-    const userData = localStorage.getItem("userData"); 
-    const navigate = useNavigate();
-    
-    // If user is not defined, send back to login page
-    useEffect(() => {
-    if (!userData) {
-        navigate('/login');
-        }
-    }, [userData, navigate]);
 
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');

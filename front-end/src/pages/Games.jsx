@@ -2,19 +2,11 @@ import "../css/Games.css"
 import redBeachBall from '../icons/red_beach_ball.png';
 import { useContext, useEffect } from "react";
 import { UserContext } from "../components/UserContext";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function Games() {
     const { user } = useContext(UserContext);
-    const userData = localStorage.getItem("userData"); 
     const navigate = useNavigate();
-
-    // If user is not defined, send back to login page
-    useEffect(() => {
-    if (!userData) {
-        navigate('/login');
-        }
-    }, [userData, navigate]);
 
     const goToGame = () => {
         navigate("/games/tictactoe");

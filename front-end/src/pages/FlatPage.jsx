@@ -7,28 +7,7 @@ import { UserContext } from "../components/UserContext";
 import { useNavigate } from "react-router-dom";
 
 function FlatPage() {
-    const { user, setUser } = useContext(UserContext);
-    const navigate = useNavigate();
-    const [checkingAuth, setCheckingAuth] = useState(true); // Avoid premature redirect - shows loading whilst checking user details
-
-    useEffect(() => {
-
-        if (!user) {
-        const storedUser = localStorage.getItem("userData");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        } else {
-            if (!window._alreadyRedirected) {
-                alert("Please log in first");
-                navigate("/login");
-                window._alreadyRedirected = true;
-            }
-        }
-        }
-        setCheckingAuth(false);
-    }, [user, setUser, navigate]);
-
-    if (checkingAuth || !user) return <div>Loading...</div>;
+    const { user } = useContext(UserContext);
     
     return <>
         <div className="title">

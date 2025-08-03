@@ -10,7 +10,7 @@ import TicTacToe from './games/TicTacToe';
 import EditDetails from './pages/EditDetails';
 import ForgotPass from './pages/ForgotPass';
 import './css/App.css';
-
+import AuthRoute from './components/AuthRoute';
 import { useEffect, useContext } from "react";
 import { UserContext } from "./components/UserContext";
 
@@ -39,10 +39,26 @@ function App() {
                     <Route path='/' element={isLoggedIn?<Navigate to={"/flatpage"}/>: <Home />} />
                     <Route path='/register' element={<Register />} />
                     <Route path='/login' element={<Login />} />
-                    <Route path='/flatpage' element={<FlatPage />} />
-                    <Route path='/games' element={<Games />} />
-                    <Route path='/games/tictactoe' element={<TicTacToe />} />
-                    <Route path='/details' element={<EditDetails />} />
+                    <Route path="/flatpage" element={
+                        <AuthRoute>
+                            <FlatPage />
+                        </AuthRoute>
+                    } />
+                    <Route path="/games" element={
+                        <AuthRoute>
+                            <Games />
+                        </AuthRoute>
+                    } />
+                    <Route path="/games/tictactoe" element={
+                        <AuthRoute>
+                            <TicTacToe />
+                        </AuthRoute>
+                    } />
+                    <Route path="/details" element={
+                        <AuthRoute>
+                            <EditDetails />
+                        </AuthRoute>
+                    } />
                     <Route path='/forgotpassword' element={<ForgotPass />} />
                     <Route path='*' element={<Navigate to='/' replace />} /> {/* Redirects unknown routes to homepage */}
                 </Routes>
