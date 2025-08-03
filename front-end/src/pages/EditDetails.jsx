@@ -7,14 +7,15 @@ import { useNavigate } from "react-router-dom";
 
 function EditDetails() {
     const { user } = useContext(UserContext);
+    const userData = localStorage.getItem("userData"); 
     const navigate = useNavigate();
     
     // If user is not defined, send back to login page
     useEffect(() => {
-    if (!user) {
+    if (!userData) {
         navigate('/login');
         }
-    }, [user, navigate]);
+    }, [userData, navigate]);
 
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
