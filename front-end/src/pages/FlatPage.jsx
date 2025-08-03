@@ -1,22 +1,34 @@
 import "../css/FlatPage.css"
 import ProgressBar from "../components/ProgressBar";
 import redBeachBall from '../icons/red_beach_ball.png';
-import { useNavigate } from "react-router-dom";
-import { useContext, useEffect } from "react";
+
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../components/UserContext";
+import { useNavigate } from "react-router-dom";
 
 function FlatPage() {
-    const { user } = useContext(UserContext);
-    const userData = localStorage.getItem("userData"); 
+    const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
-    console.log("User in FlatPage:", user);
+    const [checkingAuth, setCheckingAuth] = useState(true); // Avoid premature redirect - shows loading whilst checking user details
 
-    // If user is not defined, send back to login page
     useEffect(() => {
-    if (!userData) {
-        navigate('/login');
+
+        if (!user) {
+        const storedUser = localStorage.getItem("userData");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            if (!window._alreadyRedirected) {
+                alert("Please log in first");
+                navigate("/login");
+                window._alreadyRedirected = true;
+            }
         }
-    }, [user, navigate]);
+        }
+        setCheckingAuth(false);
+    }, [user, setUser, navigate]);
+
+    if (checkingAuth || !user) return <div>Loading...</div>;
     
     return <>
         <div className="title">

@@ -20,7 +20,8 @@ function Login() {
                 axios.post('http://localhost:5050/record/login', {email, pass})
                     .then(result => {
                         const userData = result.data.user;  // get user object from response
-
+                        
+                        // Store in local state
                         setUser({
                             name: userData.name,
                             user: userData.username,
@@ -29,6 +30,7 @@ function Login() {
                             code: userData.code
                         });
 
+                        // Also store in local storage so details persist between sessions
                         localStorage.setItem("keepLoggedIn", true);
                         localStorage.setItem("userData", JSON.stringify({
                             name: userData.name,
