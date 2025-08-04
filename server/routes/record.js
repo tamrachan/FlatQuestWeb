@@ -178,51 +178,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// PATCH '/' updates a record by id
-router.patch("/:id", async (req, res) => {
-    try {
-        const query = { _id: new ObjectId(req.params.id)};
-        const updates = {
-            $set: {
-                name: req.body.name,
-                user: req.body.user,
-                email: req.body.email,
-                pass: req.body.pass,
-            }
-        };
-
-        let collection = await db.collection("users");
-        collection.updateOne(query, updates);
-        res.send(result).status(200);
-        console.log("Successfully updated");
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Error updating record");
-    }
-});
-
-// PATCH '/' updates a record by id
-router.patch("/updateName", async (req, res) => {
-    try {
-        // TODO: GET ID
-        const query = { _id: new ObjectId(req.params.id)};
-        const updates = {
-            $set: {
-                name: req.body.name,
-            }
-        };
-
-        let collection = await db.collection("users");
-        collection.updateOne(query, updates);
-        res.send(result).status(200);
-        console.log("Successfully updated");
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Error updating record");
-    }
-});
-
+// TODO: Add a delete user function
 // DELETE '/' deletes a record
 router.delete("/:id", async (req, res) => {
     try {
@@ -239,6 +195,23 @@ router.delete("/:id", async (req, res) => {
         console.error(err);
         res.status(500).send("Error deleting record");
     }
+});
+
+async function getFlatmatesByCode(code) {
+    let collection = await db.collection("users");
+    let flatmates = await collection.find({ code: code }).toArray();
+    console.log(results);
+
+    return flatmates
+}
+
+// GET '/' fetches a list of all the records
+router.get("/flatmates", async (req, res) => {
+    const flatmates = await getFlatmatesByCode(req.body.code);
+
+    flatmates.forEach(user => {
+        console.log(user.user, user.name); 
+    });
 });
 
 // NOT SURE how to test
