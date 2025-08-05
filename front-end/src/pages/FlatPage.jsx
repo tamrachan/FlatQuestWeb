@@ -2,15 +2,49 @@ import "../css/FlatPage.css"
 import ProgressBar from "../components/ProgressBar";
 import redBeachBall from '../icons/red_beach_ball.png';
 
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../components/UserContext";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
 import { FaChevronDown } from "react-icons/fa";
 
 function FlatPage() {
-    const { user } = useContext(UserContext);
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You are not logged in");
+            navigate("/login");  // redirect to login page
+            return;
+        }
+
+        try {
+            const decoded = jwtDecode(token);
+            setUser(decoded);
+        } catch {
+            alert("Invalid token");
+            localStorage.removeItem("token");
+            navigate("/login");
+        return;
+        }
+
+        // Optional: fetch protected data
+        axios.get("http://localhost:5050/record/protected", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+        }).then(res => {
+        console.log("Protected data:", res.data);
+        }).catch(err => {
+            console.error("Token expired or invalid:", err);
+            alert("Session expired. Please login again.");
+            localStorage.removeItem("token");
+            navigate("/login");
+        });
+    }, []);
 
     const addMainTask = (e) => {
         e.preventDefault();
@@ -40,7 +74,7 @@ function FlatPage() {
     
     return <>
         <div className="title">
-            <h1>{user?.user}'s FlatPage!</h1>
+            <h1>{user?.username}'s FlatPage!</h1>
             <p>Group Code: {user?.code}</p>
         </div>
 

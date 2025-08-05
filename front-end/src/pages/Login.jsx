@@ -3,57 +3,53 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import "../css/Login.css"
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../components/UserContext";
+// import { UserContext } from "../components/UserContext";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     const navigate = useNavigate();
-    const { setUser } = useContext(UserContext);
+    // const { setUser } = useContext(UserContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (email !== '' && pass !== '') {
+        if (email !== "" && pass !== "") {
             try {
-                //await sendUserDetails({email, pass});
-                axios.post('http://localhost:5050/record/login', {email, pass})
-                    .then(result => {
-                        const userData = result.data.user;  // get user object from response
-                        
-                        // Store in local state
-                        setUser({
-                            name: userData.name,
-                            user: userData.username,
-                            email: userData.email,
-                            role: userData.role,
-                            code: userData.code
-                        });
+                const res = await axios.post("http://localhost:5050/record/login", { email, pass });
+                const token = res.data.token;
 
-                        // Also store in local storage so details persist between sessions
-                        localStorage.setItem("keepLoggedIn", true);
-                        localStorage.setItem("userData", JSON.stringify({
-                            name: userData.name,
-                            user: userData.username,
-                            email: userData.email,
-                            role: userData.role,
-                            code: userData.code
-                        }));
-                        navigate('/flatpage')
-                    })
-                    .catch(err => {
-                        alert('Invalid login');
-                    })
-                
-                setEmail('');
-                setPass('');
-            } catch (error) {
-                console.log("Error sending details:", error);
+                if (typeof token === "string") {
+                try {
+                    const decoded = jwtDecode(token);
+                    console.log("Decoded token:", decoded);
+                } catch (err) {
+                    console.error("Invalid token:", err);
+                }
+                } else {
+                    console.warn("No token found or token is not a string");
+                }
+
+                // Store token
+                localStorage.setItem("token", token);
+
+                // Optionally decode token to get user info
+                const user = jwtDecode(token);
+                console.log("Logged in as:", user);
+
+                // Navigate to a protected page
+                console.log("/flatpage");
+                navigate("/flatpage");
+            } catch (err) {
+                alert("Invalid login");
+                console.error(err);
             }
-        } else {
-            alert("Error logging in: Invalid login details.");
+
+            setEmail("");
+            setPass("");
         }
-    }
+    };
+    
 
     return (
         <div className="login">

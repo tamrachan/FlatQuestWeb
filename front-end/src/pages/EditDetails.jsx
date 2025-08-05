@@ -1,21 +1,51 @@
-import { useContext, useState } from "react";
-import { UserContext } from "../components/UserContext";
-import { Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+// import { UserContext } from "../components/UserContext";
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 function EditDetails() {
-    const { user } = useContext(UserContext);
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
-    const [name, setName] = useState('');
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [pass, setPass] = useState('');
-    const [groupCode, setGroupCode] = useState('');
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You are not logged in");
+            navigate("/login");  // redirect to login page
+            return;
+        }
+
+        try {
+            const decoded = jwtDecode(token);
+            setUser(decoded);
+        } catch {
+            alert("Invalid token");
+            localStorage.removeItem("token");
+            navigate("/login");
+        return;
+        }
+
+        // Optional: fetch protected data
+        axios.get("http://localhost:5050/record/protected", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+        }).then(res => {
+        console.log("Protected data:", res.data);
+        }).catch(err => {
+            console.error("Token expired or invalid:", err);
+            alert("Session expired. Please login again.");
+            localStorage.removeItem("token");
+            navigate("/login");
+        });
+    }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (name) {
-            axios.post('http://localhost:5050/record/updateName', {
+            axios.post('http://localhost:5050/record/update-name', {
                 name
             })
             .then(result => {
@@ -24,7 +54,7 @@ function EditDetails() {
             .catch(err => console.log(err));
         }
         if (username) {
-            axios.post('http://localhost:5050/record/updateUser', {
+            axios.post('http://localhost:5050/record/update-user', {
                 username
             })
             .then(result => {
@@ -33,7 +63,7 @@ function EditDetails() {
             .catch(err => console.log(err));
         }
         if (email) {
-            axios.post('http://localhost:5050/record/updateEmail', {
+            axios.post('http://localhost:5050/record/update-email', {
                 email
             })
             .then(result => {
@@ -42,7 +72,7 @@ function EditDetails() {
             .catch(err => console.log(err));
         }
         if (pass) {
-            axios.post('http://localhost:5050/record/updatePass', {
+            axios.post('http://localhost:5050/record/update-password', {
                 pass
             })
             .then(result => {
@@ -51,7 +81,7 @@ function EditDetails() {
             .catch(err => console.log(err));
         }
         if (groupCode && groupCode.length === 6) {
-            axios.post('http://localhost:5050/record/updateGroupCode', {
+            axios.post('http://localhost:5050/record/update-code', {
                 groupCode
             })
         }
@@ -63,25 +93,27 @@ function EditDetails() {
         setGroupCode('');
     };
 
+    if (!user) return <p>Loading...</p>;
+
     return (
         <div className="register">
             <div className="auth-form-container">
                 <h2>Edit my account details</h2>
                 <form className="register-form" onSubmit={handleSubmit}>
                     <label htmlFor="name">Full name:</label>
-                    <input value={name} onChange={(e) => setName(e.target.value)} type="name" placeholder={user.name} id="name" name="name" />
+                    <input value={user.name} onChange={(e) => setName(e.target.value)} type="name" placeholder={user.name} id="name" name="name" />
                     <br></br>
                     <label htmlFor="user">Username:</label>
-                    <input value={username} onChange={(e) => setUsername(e.target.value)} type="user" placeholder={user.user} id="user" name="user" />
+                    <input value={user.username} onChange={(e) => setUsername(e.target.value)} type="user" placeholder={user.user} id="user" name="user" />
                     <br></br>
                     <label htmlFor="email">Email:</label>
-                    <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder={user.email} id="email" name="email" />
+                    <input value={user.email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder={user.email} id="email" name="email" />
                     <br></br>
                     <label htmlFor="password">Password:</label>
-                    <input value={pass} onChange={(e) => setPass(e.target.value)} type="password" placeholder="*********" id="password" name="password" />
+                    <input value={user.pass} onChange={(e) => setPass(e.target.value)} type="password" placeholder="*********" id="password" name="password" />
                     <br></br>
                     <label htmlFor="groupCode">Change Group Code:</label>
-                    <input value={groupCode} onChange={(e) => setGroupCode(e.target.value.toUpperCase())} type="text" placeholder={user.code} 
+                    <input value={user.code} onChange={(e) => setGroupCode(e.target.value.toUpperCase())} type="text" placeholder={user.code} 
                             id="groupCode" name="groupCode" maxLength={6} />
                     <br></br>
                     <button type="submit">Update details</button>

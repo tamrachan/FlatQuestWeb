@@ -7,9 +7,36 @@ import db from "../db/connection.js";
 import { ObjectId } from "mongodb";
 
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 // Create instance of express router
 const router = express.Router();
+
+// JWT Secret
+import dotenv from "dotenv";
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET;
+
+// Middleware to verify token
+function verifyToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const token = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded; // now you can access user info in routes
+    next();
+  } catch (err) {
+    return res.status(403).json({ message: "Invalid token" });
+  }
+}
+
+router.get("/protected", verifyToken, (req, res) => {
+  res.json({ message: "This is protected", user: req.user });
+});
 
 async function printAll() {
     let collection = await db.collection("users");
@@ -136,6 +163,21 @@ router.post("/register", async (req, res) => {
     }
 });
 
+function generateToken(user) {
+  return jwt.sign(
+    {
+      id: user._id,
+      name: user.name,
+      username: user.user,
+      email: user.email,
+      role: user.role,
+      code: user.code
+    },
+    JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+}
+
 router.post('/login', async (req, res) => {
   const { email, pass } = req.body;
 
@@ -161,16 +203,8 @@ router.post('/login', async (req, res) => {
     }
 
     // Success — respond with user data
-    res.status(200).json({
-      message: "Login successful",
-      user: {
-        name: user.name,
-        username: user.user,
-        email: user.email,
-        role: user.role,
-        code: user.code
-      }
-    });
+    const token = generateToken(user);
+    res.status(200).json({ token });
 
   } catch (err) {
     console.error("Login error:", err);
