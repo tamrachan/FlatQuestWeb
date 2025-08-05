@@ -5,9 +5,38 @@ import redBeachBall from '../icons/red_beach_ball.png';
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../components/UserContext";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+import { FaChevronDown } from "react-icons/fa";
 
 function FlatPage() {
     const { user } = useContext(UserContext);
+
+    const addMainTask = (e) => {
+        e.preventDefault();
+        const taskValue = e.target.mainTask.value;
+        console.log("Adding main task:", taskValue);
+
+
+        axios.post('http://localhost:5050/task/new-task', 
+            {task: taskValue, code: user?.code, user: user?.user, assigned: "todo", date_created: new Date(), complete: false, repeat: "todo"}) // change repeat
+            .catch(err => {
+                console.error("Error adding personal task:", err);
+            })
+    }
+
+    const addPersonalTask = (e) => {
+        e.preventDefault();
+        const taskValue = e.target.personalTask.value;
+        console.log("Adding personal task:", taskValue);
+
+
+        axios.post('http://localhost:5050/task/new-personal-task', 
+            {user: user?.user, task: taskValue, date_created: new Date(), complete: false, repeat: "none"}) // change repeat
+            .catch(err => {
+                console.error("Error adding personal task:", err);
+            })
+    }
     
     return <>
         <div className="title">
@@ -18,8 +47,19 @@ function FlatPage() {
         <div className="gridContainer">
 
             <div className="taskBox">
-                <h3>Tasks</h3>
-                <input type="checkbox" value="Take out rubbish"></input> {/* maybe an onclick button would be better...  its gotta not be harcoded*/}
+                <h3 className="sticky">Tasks</h3>
+                <div className="taskList">
+
+                    <DisplayMainTasks />
+                    {/* <input type="checkbox" value="Take out rubbish"></input> maybe an onclick button would be better...  its gotta not be harcoded */}
+
+                </div>
+            </div>
+            <div className="addMainTask">
+                <form onSubmit={addMainTask}> 
+                    <input type="text" placeholder="Add main tasks here..." name="mainTask" className="inputText" />
+                    <button type="submit">Add</button>
+                </form> 
             </div>
 
             <div className="taskLog">
@@ -32,58 +72,22 @@ function FlatPage() {
 
                 <h3 className="sticky">Personal Tasks</h3>
                 <div className="taskList">
-                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
+                    {/* <form onSubmit={addPersonalTask}> 
                         <label className="taskList">
                             <input type="checkbox" name="taskDone" />
                             Personal things to do
                         </label>
-                    </form> 
-                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
-                        <label className="taskList">
-                            <input type="checkbox" name="taskDone" />
-                            Personal things to do
-                        </label>
-                    </form> 
-                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
-                        <label className="taskList">
-                            <input type="checkbox" name="taskDone" />
-                            Personal things to do
-                        </label>
-                    </form> 
-                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
-                        <label className="taskList">
-                            <input type="checkbox" name="taskDone" />
-                            Personal things to do
-                        </label>
-                    </form> 
-                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
-                        <label className="taskList">
-                            <input type="checkbox" name="taskDone" />
-                            Personal things to do
-                        </label>
-                    </form> 
-                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
-                        <label className="taskList">
-                            <input type="checkbox" name="taskDone" />
-                            Personal things to do
-                        </label>
-                    </form> 
-                    <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
-                        <label className="taskList">
-                            <input type="checkbox" name="taskDone" />
-                            Personal things to do
-                        </label>
-                    </form> 
+                    </form>  */}
+                    <DisplayPersonalTasks />
                 </div>
-
 
             </div>
             <div className="addTask">
-                <form action="{addPersonalTask}"> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
+                <form onSubmit={addPersonalTask}> {/* it should be a method that adds it to the tasks data base in another personal database collection */}
                     <input type="text" placeholder="Add personal tasks here..." name="personalTask" className="inputText" />
+                    {/* <Dropdown /> */}
                     <button type="submit">Add</button>
                 </form> 
-
             </div>
 
             <div className="stats">
@@ -135,6 +139,83 @@ function FlatPage() {
 //     </div>
 
 // }
+
+function DisplayMainTasks() {
+    const [tasks, setTasks] = useState([])
+
+    useEffect(() => {
+        axios.get('http://localhost:5050/task/get-tasks')
+        .then(response => {
+            setTasks(response.data);
+        })
+    }, []);
+
+    const results = [];
+
+    for (const task of tasks) {
+        console.log("tasks", task);
+
+        results.push(
+            <div>{task.date_created}: {task.task} {task.complete}</div>
+        )
+    }
+
+    return <div>{results}</div>;
+}
+
+function DisplayPersonalTasks() {
+    const [tasks, setTasks] = useState([])
+
+    useEffect(() => {
+        axios.get('http://localhost:5050/task/get-personal-tasks')
+        .then(response => {
+            setTasks(response.data);
+        })
+    }, []);
+
+    const results = [];
+
+    for (const task of tasks) {
+        console.log("personal tasks", task);
+
+        results.push(
+            <div>{task.date_created}: {task.task} {task.complete}</div>
+        )
+    }
+
+    return <div>{results}</div>;
+}
+
+// TODO
+function Dropdown() {
+    const [ display, setDisplay ] = useState( 'none' )
+
+    function handleClick() {
+        if ( display == 'none' ) {
+            setDisplay( 'block' )
+        } else {
+            setDisplay( 'none' )
+        }
+    }
+
+    return (
+        <>
+        <div className="dropdown-btn">Repeat<span className="toggle-icon"><FaChevronDown /></span></div> {/* dropdown button */}
+        <div className="dropdown-content">content</div> {/* dropdown content */}
+
+        {/* <div className="dropdown">
+            <button className="dropbtn">Repeat</button>
+            <div className="dropdown-content">
+                <a href="#">Daily</a>
+                <a href="#">Weekly</a>
+                <a href="#">Monthly</a>
+                <a href="#">Yearly</a>
+                <a href="#">Custom</a>
+            </div>
+        </div> */}
+        </>
+    );
+}
 
 function Flatmate({ name, imageSrc }) {
     return <div className="flatmate-icon">

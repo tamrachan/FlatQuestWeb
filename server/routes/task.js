@@ -57,6 +57,21 @@ router.post("/new-personal-task", async (req, res) => {
   }
 });
 
+// Get all tasks from the "tasks" database
+router.get("/get-tasks", async (req, res) => {
+    let collection = await db.collection("tasks");
+    let result = await collection.find({}).toArray();
+    res.send(result).status(200);
+});
+
+// Get all personal tasks from the "personal" database
+router.get("/get-personal-tasks", async (req, res) => {
+    let collection = await db.collection("personal");
+    let result = await collection.find({}).toArray();
+    res.send(result).status(200);
+});
+
+
 // Delete a task by id
 // FRONTEND: await fetch(`/task/remove-task/${taskId}`, {
 //     method: "DELETE"
