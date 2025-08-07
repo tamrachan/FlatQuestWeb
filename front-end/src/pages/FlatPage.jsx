@@ -175,6 +175,7 @@ function FlatPage() {
 // }
 
 function DisplayMainTasks() {
+    const { user } = useContext(UserContext); // could put this as a prop instead
     const [tasks, setTasks] = useState([])
 
     useEffect(() => {
@@ -186,12 +187,18 @@ function DisplayMainTasks() {
 
     const results = [];
 
-    for (const task of tasks) {
-        console.log("tasks", task);
+    
 
-        results.push(
-            <div>{task.date_created}: {task.task} {task.complete}</div>
-        )
+    for (const task of tasks) {
+
+        if ( (! tasks.complete) && (task.code === user?.code) ) { // only show tasks that are not complete and belong to the user's group code
+
+            console.log("tasks", task);
+
+            results.push(
+                <div>{task.code}: {task.task}</div>
+            )
+        }
     }
 
     return <div>{results}</div>;
@@ -210,11 +217,13 @@ function DisplayPersonalTasks() {
     const results = [];
 
     for (const task of tasks) {
-        console.log("personal tasks", task);
+        if ( (! tasks.complete) && (task.user === user?.user) ) {
+            console.log("personal tasks", task);
 
-        results.push(
-            <div>{task.date_created}: {task.task} {task.complete}</div>
-        )
+            results.push(
+                <div>{task.date_created}: {task.task} {task.complete}</div>
+            )
+        }
     }
 
     return <div>{results}</div>;
