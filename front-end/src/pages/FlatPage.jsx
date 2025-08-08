@@ -8,6 +8,7 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
 import { FaChevronDown } from "react-icons/fa";
+import { ConfirmPopup } from 'primereact/confirmpopup'; 
 
 function FlatPage() {
     const [user, setUser] = useState(null);
@@ -107,20 +108,13 @@ function FlatPage() {
 
             <div className="taskLog">
                 <h3>Task Log</h3>
-                <div>stuff thats been done</div>
-                <div>blah blha</div>
+                <DisplayTaskLog user={user} />
             </div>
 
             <div className="personalTasks">
 
                 <h3 className="sticky">Personal Tasks</h3>
                 <div className="taskList">
-                    {/* <form onSubmit={addPersonalTask}> 
-                        <label className="taskList">
-                            <input type="checkbox" name="taskDone" />
-                            Personal things to do
-                        </label>
-                    </form>  */}
                     <DisplayPersonalTasks user={user} />
                 </div>
 
@@ -192,11 +186,14 @@ function DisplayMainTasks({ user }) {
         .then(response => {
             setTasks(response.data);
         })
+        .catch(error => {
+            console.error("Error fetching tasks:", error);
+        });
     }, []);
 
     const results = [];
 
-    console.log("user", user);
+    // console.log("user", user);
 
     for (const task of tasks) {
         if ( (! tasks.complete) && (task.code === user?.code) ) { // only show tasks that are not complete and belong to the user's group code
@@ -220,9 +217,26 @@ function DisplayPersonalTasks({ user }) {
         .then(response => {
             setTasks(response.data);
         })
+        .catch(error => {
+            console.error("Error fetching tasks:", error);
+        });
     }, []);
 
     const results = [];
+
+    function handleChange(e) {
+        const isChecked = e.target.checked;
+
+
+
+        // // then ask for confirmation, if yes, post this
+        // axios.post("http://localhost:5050/task/complete-task", {
+        //     complete: isChecked})
+        //     .then(navigate(0))
+
+        console.log("Checked:", isChecked);
+
+    }
 
     // console.log(tasks.user)
     // console.log("props.user", props.user);
@@ -232,7 +246,54 @@ function DisplayPersonalTasks({ user }) {
             console.log("user", user?.username, task.user);
 
             results.push(
-                <div>{task.task}</div>
+
+                <div>
+                    
+                    <ConfirmPopup />
+                    <input type="checkbox" onChange={handleChange} />{task.task}
+                    
+                    </div>
+            )
+        }
+    }
+
+    return <div>{results}</div>;
+}
+
+// not tested
+function DisplayTaskLog({ user }) {
+    const [tasks, setTasks] = useState([])
+
+    useEffect(() => {
+        Promise.all([
+            axios.get('http://localhost:5050/task/get-personal-tasks'),
+            axios.get('http://localhost:5050/task/get-tasks')
+        ])
+        .then(([personalResponse, mainResponse]) => {
+            setTasks([...personalResponse.data, ...mainResponse.data]);
+        })
+        .catch(error => {
+            console.error("Error fetching task logs:", error);
+        });
+
+    }, []);
+
+    const results = [];
+
+    
+
+    for (const task of tasks) {
+        // (tasks.complete) && 
+        if ( ((task.user === user?.username) || (task.code === user?.code)) ) { // only show tasks that are complete and belong to the user's group code or personal tasks
+            console.log("task log", user?.username, task.user);
+
+            //checked={task.complete}
+            results.push(
+                <div>
+
+                     {task.task}
+
+                </div>
             )
         }
     }
