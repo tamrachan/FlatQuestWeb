@@ -84,7 +84,7 @@ function FlatPage() {
                 <h3 className="sticky">Tasks</h3>
                 <div className="taskList">
 
-                    <DisplayMainTasks />
+                    <DisplayMainTasks user={user} />
                     {/* <input type="checkbox" value="Take out rubbish"></input> maybe an onclick button would be better...  its gotta not be harcoded */}
 
                 </div>
@@ -112,7 +112,7 @@ function FlatPage() {
                             Personal things to do
                         </label>
                     </form>  */}
-                    <DisplayPersonalTasks />
+                    <DisplayPersonalTasks user={user} />
                 </div>
 
             </div>
@@ -174,8 +174,8 @@ function FlatPage() {
 
 // }
 
-function DisplayMainTasks() {
-    const { user } = useContext(UserContext); // could put this as a prop instead
+function DisplayMainTasks({ user }) {
+    // const { user } = useContext(UserContext); // could put this as a prop instead
     const [tasks, setTasks] = useState([])
 
     useEffect(() => {
@@ -204,7 +204,7 @@ function DisplayMainTasks() {
     return <div>{results}</div>;
 }
 
-function DisplayPersonalTasks() {
+function DisplayPersonalTasks({ user }) {
     const [tasks, setTasks] = useState([])
 
     useEffect(() => {
