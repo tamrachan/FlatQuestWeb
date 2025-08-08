@@ -49,27 +49,36 @@ function FlatPage() {
     const addMainTask = (e) => {
         e.preventDefault();
         const taskValue = e.target.mainTask.value;
-        console.log("Adding main task:", taskValue);
+        
+        if (taskValue !== "") {
 
+            console.log("Adding main task:", taskValue, "for user:", user?.username);
 
-        axios.post('http://localhost:5050/task/new-task', 
-            {task: taskValue, code: user?.code, user: user?.user, assigned: "todo", date_created: new Date(), complete: false, repeat: "todo"}) // change repeat
-            .catch(err => {
-                console.error("Error adding personal task:", err);
-            })
+            axios.post('http://localhost:5050/task/new-task', 
+                {task: taskValue, code: user?.code, publisher: user?.username, assigned: "todo", date_created: new Date(), complete: false, repeat: "todo"}) // change repeat
+                .then(navigate(0)) // Reloads the current route
+                .catch(err => {
+                    console.error("Error adding personal task:", err);
+                })
+        }
     }
 
     const addPersonalTask = (e) => {
         e.preventDefault();
         const taskValue = e.target.personalTask.value;
-        console.log("Adding personal task:", taskValue);
+
+        if (taskValue !== "") {
+
+        console.log("Adding personal task:", taskValue, "for user:", user?.username);
 
 
-        axios.post('http://localhost:5050/task/new-personal-task', 
-            {user: user?.user, task: taskValue, date_created: new Date(), complete: false, repeat: "none"}) // change repeat
-            .catch(err => {
-                console.error("Error adding personal task:", err);
-            })
+            axios.post('http://localhost:5050/task/new-personal-task', 
+                {task: taskValue, user: user?.username, date_created: new Date(), complete: false, repeat: "none"}) // change repeat
+                .then(navigate(0)) // Reloads the current route
+                .catch(err => {
+                    console.error("Error adding personal task:", err);
+                })
+        }
     }
     
     return <>
@@ -84,7 +93,7 @@ function FlatPage() {
                 <h3 className="sticky">Tasks</h3>
                 <div className="taskList">
 
-                    <DisplayMainTasks user={user} />
+                    <DisplayMainTasks user={user} /> 
                     {/* <input type="checkbox" value="Take out rubbish"></input> maybe an onclick button would be better...  its gotta not be harcoded */}
 
                 </div>
@@ -176,7 +185,7 @@ function FlatPage() {
 
 function DisplayMainTasks({ user }) {
     // const { user } = useContext(UserContext); // could put this as a prop instead
-    const [tasks, setTasks] = useState([])
+    const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
         axios.get('http://localhost:5050/task/get-tasks')
@@ -187,16 +196,15 @@ function DisplayMainTasks({ user }) {
 
     const results = [];
 
-    
+    console.log("user", user);
 
     for (const task of tasks) {
-
         if ( (! tasks.complete) && (task.code === user?.code) ) { // only show tasks that are not complete and belong to the user's group code
 
             console.log("tasks", task);
 
             results.push(
-                <div>{task.code}: {task.task}</div>
+                <div>{task.assigned}: {task.task}</div>
             )
         }
     }
@@ -216,12 +224,15 @@ function DisplayPersonalTasks({ user }) {
 
     const results = [];
 
+    // console.log(tasks.user)
+    // console.log("props.user", props.user);
+
     for (const task of tasks) {
-        if ( (! tasks.complete) && (task.user === user?.user) ) {
-            console.log("personal tasks", task);
+        if ( (! tasks.complete) && (task.user === user?.username) ) {
+            console.log("user", user?.username, task.user);
 
             results.push(
-                <div>{task.date_created}: {task.task} {task.complete}</div>
+                <div>{task.task}</div>
             )
         }
     }
