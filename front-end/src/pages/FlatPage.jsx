@@ -2,12 +2,14 @@ import "../css/FlatPage.css"
 import ProgressBar from "../components/ProgressBar";
 import redBeachBall from '../icons/red_beach_ball.png';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "../components/AuthRoute";
 import { FaChevronDown } from "react-icons/fa";
-import { ConfirmPopup } from 'primereact/confirmpopup'; 
+
+import { ConfirmPopup, confirmPopup  } from 'primereact/confirmpopup'; 
+import { Toast } from 'primereact/toast';
 
 function FlatPage() {
     const [user, setUser] = useState(null);
@@ -196,7 +198,12 @@ function DisplayMainTasks({ user }) {
 }
 
 function DisplayPersonalTasks({ user }) {
-    const [tasks, setTasks] = useState([])
+    const [tasks, setTasks] = useState([]);
+    
+    const [visible, setVisible] = useState(false);
+    const toast = useRef(null);
+    const [complete, setComplete] = useState(false);
+    // const checkBoxButton = useRef(null);
 
     useEffect(() => {
         axios.get('http://localhost:5050/task/get-personal-tasks')
@@ -213,19 +220,34 @@ function DisplayPersonalTasks({ user }) {
     function handleChange(e) {
         const isChecked = e.target.checked;
 
-
-
         // // then ask for confirmation, if yes, post this
-        // axios.post("http://localhost:5050/task/complete-task", {
-        //     complete: isChecked})
-        //     .then(navigate(0))
+        axios.post("http://localhost:5050/task/complete-task", {
+            complete: isChecked, collectionName: "personal-tasks"})
+            .then(navigate(0))
+            .catch(error => {
+                console.error("Error: ", error);
+        });
 
         console.log("Checked:", isChecked);
 
     }
 
-    // console.log(tasks.user)
-    // console.log("props.user", props.user);
+    // const accept = () => {
+    //     toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'You have checked of a task!', life: 3000 });
+
+    //     axios.post("http://localhost:5050/task/complete-task", {
+    //         complete: isChecked, collectionName: "personal-tasks",  })
+    //         .then(navigate(0))
+    //         .catch(error => {
+    //             console.error("Error: ", error);
+    //     });
+
+    // };
+
+    // const cancel = () => {
+    //     setVisible(false);
+    //     navigate(0);
+    // };
 
     for (const task of tasks) {
         if ( (! tasks.complete) && (task.user === user?.user) ) {
@@ -234,11 +256,17 @@ function DisplayPersonalTasks({ user }) {
             results.push(
 
                 <div>
-                    
-                    <ConfirmPopup />
-                    <input type="checkbox" onChange={handleChange} />{task.task}
-                    
-                    </div>
+                
+                    <Toast ref={toast} /> 
+                    <ConfirmPopup className="confirmPopup" //target={checkBoxButton.current} // position of the popup
+                        visible={visible} 
+                        onHide={() => setVisible(false)} // what happens when user closes popup 
+                        message="Are you sure you want to proceed?" accept={() => setComplete(!complete)} //reject={cancel} 
+                        />
+                    <input type="checkbox" onChange={() => setVisible(true)} />{task.task}
+                    {/* make it go in middle of screen */}
+                
+                </div>
             )
         }
     }
@@ -265,8 +293,6 @@ function DisplayTaskLog({ user }) {
     }, []);
 
     const results = [];
-
-    
 
     for (const task of tasks) {
         // (tasks.complete) && 

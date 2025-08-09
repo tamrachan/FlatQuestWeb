@@ -218,3 +218,20 @@ img {
   width: 60px;
   height: 60px;
 }
+
+.confirmPopup {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999;
+
+    background: white !important;
+    color: black;
+    border: 2px solid #ccc !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+    padding: 1.5rem !important;
+    min-width: 300px !important;
+    backdrop-filter: blur(2px);
+}

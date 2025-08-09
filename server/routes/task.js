@@ -71,6 +71,12 @@ router.get("/get-personal-tasks", async (req, res) => {
     res.send(result).status(200);
 });
 
+// change status of task to completed 
+router.post("/complete-task", async (req, res) => {
+    let collection = await db.collection(req.body.collectionName);
+    let result = await collection.find({}).toArray();
+});
+
 
 // Delete a task by id
 // FRONTEND: await fetch(`/task/remove-task/${taskId}`, {
