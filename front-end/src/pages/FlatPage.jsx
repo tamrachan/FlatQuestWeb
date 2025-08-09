@@ -4,9 +4,8 @@ import redBeachBall from '../icons/red_beach_ball.png';
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-
+import api from "../components/AuthRoute";
 import { FaChevronDown } from "react-icons/fa";
 import { ConfirmPopup } from 'primereact/confirmpopup'; 
 
@@ -17,35 +16,22 @@ function FlatPage() {
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
-            alert("You are not logged in");
-            navigate("/login");  // redirect to login page
+            navigate("/login");
             return;
         }
 
-        try {
-            const decoded = jwtDecode(token);
-            setUser(decoded);
-        } catch {
-            alert("Invalid token");
-            localStorage.removeItem("token");
-            navigate("/login");
-        return;
-        }
-
-        // Optional: fetch protected data
-        axios.get("http://localhost:5050/record/protected", {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-        }).then(res => {
-        console.log("Protected data:", res.data);
-        }).catch(err => {
-            console.error("Token expired or invalid:", err);
-            alert("Session expired. Please login again.");
-            localStorage.removeItem("token");
-            navigate("/login");
-        });
+        // Fetch fresh user data instead of using JWT payload
+        api.get('/reset/me')
+            .then(res => {
+                setUser(res.data.user); // Fresh data from database
+            })
+            .catch(err => {
+                console.error("Failed to fetch user data:", err);
+                localStorage.removeItem("token");
+                navigate("/login");
+            });
     }, []);
+
 
     const addMainTask = (e) => {
         e.preventDefault();
@@ -53,10 +39,10 @@ function FlatPage() {
         
         if (taskValue !== "") {
 
-            console.log("Adding main task:", taskValue, "for user:", user?.username);
+            console.log("Adding main task:", taskValue, "for user:", user?.user);
 
             axios.post('http://localhost:5050/task/new-task', 
-                {task: taskValue, code: user?.code, publisher: user?.username, assigned: "todo", date_created: new Date(), complete: false, repeat: "todo"}) // change repeat
+                {task: taskValue, code: user?.code, publisher: user?.user, assigned: "todo", date_created: new Date(), complete: false, repeat: "todo"}) // change repeat
                 .then(navigate(0)) // Reloads the current route
                 .catch(err => {
                     console.error("Error adding personal task:", err);
@@ -70,11 +56,11 @@ function FlatPage() {
 
         if (taskValue !== "") {
 
-        console.log("Adding personal task:", taskValue, "for user:", user?.username);
+        console.log("Adding personal task:", taskValue, "for user:", user?.user);
 
 
             axios.post('http://localhost:5050/task/new-personal-task', 
-                {task: taskValue, user: user?.username, date_created: new Date(), complete: false, repeat: "none"}) // change repeat
+                {task: taskValue, user: user?.user, date_created: new Date(), complete: false, repeat: "none"}) // change repeat
                 .then(navigate(0)) // Reloads the current route
                 .catch(err => {
                     console.error("Error adding personal task:", err);
@@ -84,7 +70,7 @@ function FlatPage() {
     
     return <>
         <div className="title">
-            <h1>{user?.username}'s FlatPage!</h1>
+            <h1>{user?.user}'s FlatPage!</h1>
             <p>Group Code: {user?.code}</p>
         </div>
 
@@ -242,8 +228,8 @@ function DisplayPersonalTasks({ user }) {
     // console.log("props.user", props.user);
 
     for (const task of tasks) {
-        if ( (! tasks.complete) && (task.user === user?.username) ) {
-            console.log("user", user?.username, task.user);
+        if ( (! tasks.complete) && (task.user === user?.user) ) {
+            console.log("user", user?.user, task.user);
 
             results.push(
 
@@ -284,8 +270,8 @@ function DisplayTaskLog({ user }) {
 
     for (const task of tasks) {
         // (tasks.complete) && 
-        if ( ((task.user === user?.username) || (task.code === user?.code)) ) { // only show tasks that are complete and belong to the user's group code or personal tasks
-            console.log("task log", user?.username, task.user);
+        if ( ((task.user === user?.user) || (task.code === user?.code)) ) { // only show tasks that are complete and belong to the user's group code or personal tasks
+            console.log("task log", user?.user, task.user);
 
             //checked={task.complete}
             results.push(

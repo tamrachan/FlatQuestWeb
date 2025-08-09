@@ -9,9 +9,30 @@ import db from "../db/connection.js";
 import { ObjectId } from "mongodb";
 
 import bcrypt from "bcryptjs";
+import { auth } from "./auth.js"
 
 // Create instance of express router
 const router = express.Router();
+
+// In your reset.js or users routes
+router.get("/me", auth, async (req, res) => {
+  try {
+    const user = await db.collection("users").findOne(
+      { _id: new ObjectId(req.userId) },
+      { projection: { password: 0 } } // Exclude password
+    );
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    
+    res.status(200).json({ user });
+  } catch (err) {
+    console.error("Get user error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 // TODO: POST /reset/send-pin
 router.post('/send-pin', async (req, res) => {
@@ -60,115 +81,179 @@ router.patch('/update-password', async (req, res) => {
   }
 });
 
-// PATCH '/' updates a record by id
-router.patch("/update-name/:id", async (req, res) => {
-    try {
-        const userId = req.params.id;
-
-        if (!userId || !req.body.name) {
-            return res.status(400).json({ message: "Missing ID or name" });
-        }
-
-        const query = { _id: new ObjectId(userId) };
-        const updates = {
-            $set: { name: req.body.name }
-        };
-
-        const collection = await db.collection("users");
-        const result = await collection.updateOne(query, updates);
-
-        if (result.matchedCount === 0) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.status(200).json({ message: "Name updated successfully" });
-        console.log(`User ${userId} name updated to "${req.body.name}"`);
-    } catch (err) {
-        console.error("Update error:", err);
-        res.status(500).send("Error updating record");
-    }
-});
-
-router.patch("/update-user/:id", async (req, res) => {
+// Clean update-name route
+router.patch("/update-name", auth, async (req, res) => {
   try {
-    const userId = req.params.id;
-    const { user } = req.body;
-
-    if (!user) {
-      return res.status(400).json({ message: "Username is required." });
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ message: "Name is required." });
+    
+    const currentUser = await db.collection("users").findOne({ _id: new ObjectId(req.userId) });
+    
+    if (currentUser?.name === name) {
+      return res.status(200).json({ message: "Name is already set to this value" });
     }
-
+    
     const result = await db.collection("users").updateOne(
-      { _id: new ObjectId(userId) },
-      { $set: { user } }
+      { _id: new ObjectId(req.userId) },
+      { $set: { name } }
     );
-
+    
     if (result.matchedCount === 0) {
       return res.status(404).json({ message: "User not found." });
     }
-
-    res.status(200).json({ message: "Username updated." });
+    
+    res.status(200).json({ message: "Name updated successfully" });
   } catch (err) {
     console.error("Update name error:", err);
-    res.status(500).send("Server error");
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-router.patch("/update-email/:id", async (req, res) => {
+// Update username
+router.patch("/update-user", auth, async (req, res) => {
   try {
-    const userId = req.params.id;
-    const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ message: "Email is required." });
+    const { username } = req.body;
+    if (!username) return res.status(400).json({ message: "Username is required." });
+    
+    const currentUser = await db.collection("users").findOne({ _id: new ObjectId(req.userId) });
+    
+    if (currentUser?.user === username) {
+      return res.status(200).json({ message: "Username is already set to this value" });
     }
+    
+    // Check if username already exists for another user
+    const existing = await db.collection("users").findOne({ user: username });
+    if (existing && existing._id.toString() !== req.userId) {
+      return res.status(409).json({ message: "Username already in use." });
+    }
+    
+    const result = await db.collection("users").updateOne(
+      { _id: new ObjectId(req.userId) },
+      { $set: { user: username } }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    
+    res.status(200).json({ message: "Username updated successfully" });
+  } catch (err) {
+    console.error("Update username error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
-    // Optional: check if email is already in use
+// Update email
+router.patch("/update-email", auth, async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: "Email is required." });
+    
+    const currentUser = await db.collection("users").findOne({ _id: new ObjectId(req.userId) });
+    
+    if (currentUser?.email === email) {
+      return res.status(200).json({ message: "Email is already set to this value" });
+    }
+    
+    // Check if email already exists for another user
     const existing = await db.collection("users").findOne({ email });
-    if (existing && existing._id.toString() !== userId) {
+    if (existing && existing._id.toString() !== req.userId) {
       return res.status(409).json({ message: "Email already in use." });
     }
-
+    
     const result = await db.collection("users").updateOne(
-      { _id: new ObjectId(userId) },
+      { _id: new ObjectId(req.userId) },
       { $set: { email } }
     );
-
+    
     if (result.matchedCount === 0) {
       return res.status(404).json({ message: "User not found." });
     }
-
-    res.status(200).json({ message: "Email updated." });
+    
+    res.status(200).json({ message: "Email updated successfully" });
   } catch (err) {
     console.error("Update email error:", err);
-    res.status(500).send("Server error");
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-router.patch("/update-code/:id", async (req, res) => {
+// Update group code
+router.patch("/update-code", auth, async (req, res) => {
   try {
-    const userId = req.params.id;
-    const { code } = req.body;
-
-    if (!code) {
-      return res.status(400).json({ message: "Code is required." });
+    const { groupCode } = req.body;
+    if (!groupCode) return res.status(400).json({ message: "Group code is required." });
+    
+    if (groupCode.length !== 6) {
+      return res.status(400).json({ message: "Group code must be 6 characters." });
     }
-
+    
+    const upperCode = groupCode.toUpperCase();
+    const currentUser = await db.collection("users").findOne({ _id: new ObjectId(req.userId) });
+    
+    if (currentUser?.code === upperCode) {
+      return res.status(200).json({ message: "Group code is already set to this value" });
+    }
+    
     const result = await db.collection("users").updateOne(
-      { _id: new ObjectId(userId) },
-      { $set: { code } }
+      { _id: new ObjectId(req.userId) },
+      { $set: { code: upperCode } }
     );
-
+    
     if (result.matchedCount === 0) {
       return res.status(404).json({ message: "User not found." });
     }
-
-    res.status(200).json({ message: "Group code updated." });
+    
+    res.status(200).json({ message: "Group code updated successfully" });
   } catch (err) {
-    console.error("Update code error:", err);
-    res.status(500).send("Server error");
+    console.error("Update group code error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
+
+// // Update password (authenticated - requires current password)
+// router.patch("/change-password", auth, async (req, res) => {
+//   try {
+//     const { currentPassword, newPassword } = req.body;
+    
+//     if (!currentPassword || !newPassword) {
+//       return res.status(400).json({ message: "Current and new password are required." });
+//     }
+    
+//     const currentUser = await db.collection("users").findOne({ _id: new ObjectId(req.userId) });
+//     if (!currentUser) {
+//       return res.status(404).json({ message: "User not found." });
+//     }
+    
+//     // Verify current password
+//     const isValid = await bcrypt.compare(currentPassword, currentUser.password);
+//     if (!isValid) {
+//       return res.status(400).json({ message: "Current password is incorrect." });
+//     }
+    
+//     // Check if new password is same as current
+//     const isSame = await bcrypt.compare(newPassword, currentUser.password);
+//     if (isSame) {
+//       return res.status(200).json({ message: "Password is already set to this value" });
+//     }
+    
+//     const hashedNew = await bcrypt.hash(newPassword, 10);
+    
+//     const result = await db.collection("users").updateOne(
+//       { _id: new ObjectId(req.userId) },
+//       { $set: { password: hashedNew } }
+//     );
+    
+//     if (result.matchedCount === 0) {
+//       return res.status(404).json({ message: "User not found." });
+//     }
+    
+//     res.status(200).json({ message: "Password changed successfully" });
+//   } catch (err) {
+//     console.error("Change password error:", err);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
+
 
 // // PATCH '/' updates a record by id
 // router.patch("/:id", async (req, res) => {
