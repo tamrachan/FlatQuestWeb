@@ -73,8 +73,17 @@ router.get("/get-personal-tasks", async (req, res) => {
 
 // change status of task to completed 
 router.post("/complete-task", async (req, res) => {
-    // let collection = await db.collection(req.body.collectionName).updateOne();
-    return res.send(result).status(200);
+    try {
+        let id = req.body._id;
+        let result = await db.collection(req.body.collectionName).updateOne( { _id: new ObjectId(id)}, {$set: {complete: Boolean(true)}} );
+        
+        console.log(id, req.body.collectionName, "test")
+        
+        return res.send(result);
+    } catch (err) {
+        console.error("Task error:", err);
+        return res.status(500).json({ message: "Server error" });
+  }
 });
 
 
