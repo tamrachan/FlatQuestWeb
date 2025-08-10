@@ -201,8 +201,9 @@ function DisplayPersonalTasks({ user }) {
     const [tasks, setTasks] = useState([]);
     const navigate = useNavigate();
     
-    const [visible, setVisible] = useState(false);
+    // const [visible, setVisible] = useState(false);
     const toast = useRef(null);
+    const [confirmTaskId, setConfirmTaskId] = useState(null);
     // const [complete, setComplete] = useState(false);
     // const checkBoxButton = useRef(null);
 
@@ -234,15 +235,6 @@ function DisplayPersonalTasks({ user }) {
     // }
 
     const accept = (taskId) => {
-        // toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'You have checked of a task!', life: 3000 });
-
-        // console.log(complete, "j")
-
-        // setComplete( (!complete) );
-
-        // console.log((!complete), "hbkbsd")
-
-        // use task and time to find the correct record- that wont work on repeated tasks... we need a task id
         axios.post("http://localhost:5050/task/complete-task", {
             collectionName: "personal", _id: taskId })
             .then(navigate(0))
@@ -254,31 +246,33 @@ function DisplayPersonalTasks({ user }) {
     };
 
     const cancel = () => {
-        setVisible(false);
+        setConfirmTaskId(null);
         navigate(0);
     };
 
-    for (const task of tasks) {
-        if ( (! task.complete) && (task.user === user?.user) ) {
-            // console.log("userfjhjfjhf", task._id);
+    return (
+        <>
+            <div>
+            {// streams
+            tasks
+                .filter(task => (! task.complete) && (task.user === user?.user))
+                .map(task => 
 
-            results.push(
+                    <div key={task._id}>
+                        <input type="checkbox" onChange={() => setConfirmTaskId(task._id)} /> {task.task}
 
-                <div>
-                
-                    <Toast ref={toast} /> 
-                    <ConfirmPopup className="confirmPopup" 
-                        visible={visible} 
-                        onHide={() => setVisible(false)} 
-                        message="Are you sure you want to proceed?" accept={() => accept(task._id)} reject={cancel} />
-                    <input type="checkbox" onChange={() => setVisible(true)} /> {task.task}
-                
-                </div>
-            )
-        }
-    }
+                    </div>
+                )}
+            </div>
 
-    return <div>{results}</div>;
+            <div>
+                <Toast ref={toast} /> 
+                        <ConfirmPopup className="confirmPopup" 
+                            visible={confirmTaskId} 
+                            message="Are you sure you want to proceed?" accept={() => confirmTaskId && accept(confirmTaskId)} reject={cancel} />
+            </div>
+        </>
+    );
 }
 
 // not tested
