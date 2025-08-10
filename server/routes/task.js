@@ -75,11 +75,17 @@ router.get("/get-personal-tasks", async (req, res) => {
 router.post("/complete-task", async (req, res) => {
     try {
         let id = req.body._id;
-        let result = await db.collection(req.body.collectionName).updateOne( { _id: new ObjectId(id)}, {$set: {complete: Boolean(true)}} );
+        let collectionName = req.body.collectionName;
+
+        if (!collectionName || !id) {
+            return res.status(400).json({ message: "Missing collectionName or _id" });
+        }
+
+        let result = await db.collection(collectionName).updateOne( { _id: ObjectId.createFromHexString(id)}, {$set: {complete: Boolean(true)}} );
         
-        console.log(id, req.body.collectionName, "test")
+        console.log(ObjectId.createFromHexString(id), collectionName, "test", result)
         
-        return res.send(result);
+        return res.status(200).send(result);
     } catch (err) {
         console.error("Task error:", err);
         return res.status(500).json({ message: "Server error" });

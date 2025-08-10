@@ -41,7 +41,7 @@ function FlatPage() {
         
         if (taskValue !== "") {
 
-            console.log("Adding main task:", taskValue, "for user:", user?.user);
+            // console.log("Adding main task:", taskValue, "for user:", user?.user);
 
             axios.post('http://localhost:5050/task/new-task', 
                 {task: taskValue, code: user?.code, publisher: user?.user, assigned: "todo", date_created: new Date(), complete: false, repeat: "todo"}) // change repeat
@@ -58,7 +58,7 @@ function FlatPage() {
 
         if (taskValue !== "") {
 
-        console.log("Adding personal task:", taskValue, "for user:", user?.user);
+        // console.log("Adding personal task:", taskValue, "for user:", user?.user);
 
 
             axios.post('http://localhost:5050/task/new-personal-task', 
@@ -184,9 +184,9 @@ function DisplayMainTasks({ user }) {
     // console.log("user", user);
 
     for (const task of tasks) {
-        if ( (! tasks.complete) && (task.code === user?.code) ) { // only show tasks that are not complete and belong to the user's group code
+        if ( (! task.complete) && (task.code === user?.code) ) { // only show tasks that are not complete and belong to the user's group code
 
-            console.log("tasks", task);
+            // console.log("tasks", task);
 
             results.push(
                 <div>{task.assigned}: {task.task}</div>
@@ -244,8 +244,8 @@ function DisplayPersonalTasks({ user }) {
 
         // use task and time to find the correct record- that wont work on repeated tasks... we need a task id
         axios.post("http://localhost:5050/task/complete-task", {
-            collectionName: "personal-tasks", _id: taskId })
-            // .then(navigate(0))
+            collectionName: "personal", _id: taskId })
+            .then(navigate(0))
             .catch(error => {
                 console.error("Error: ", error);
         });
@@ -259,7 +259,7 @@ function DisplayPersonalTasks({ user }) {
     };
 
     for (const task of tasks) {
-        if ( (! tasks.complete) && (task.user === user?.user) ) {
+        if ( (! task.complete) && (task.user === user?.user) ) {
             // console.log("userfjhjfjhf", task._id);
 
             results.push(
@@ -302,7 +302,7 @@ function DisplayTaskLog({ user }) {
     const results = [];
 
     for (const task of tasks) {
-        if ( (tasks.complete) && ((task.user === user?.user) || (task.code === user?.code)) ) { // only show tasks that are complete and belong to the user's group code or personal tasks
+        if ( (task.complete) && ((task.user === user?.user) || (task.code === user?.code)) ) { // only show tasks that are complete and belong to the user's group code or personal tasks
             // console.log("task log", user?.user, task.user);
 
             //checked={task.complete}
