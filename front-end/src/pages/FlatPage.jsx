@@ -199,6 +199,7 @@ function DisplayMainTasks({ user }) {
 
 function DisplayPersonalTasks({ user }) {
     const [tasks, setTasks] = useState([]);
+    const navigate = useNavigate();
     
     const [visible, setVisible] = useState(false);
     const toast = useRef(null);
@@ -217,54 +218,57 @@ function DisplayPersonalTasks({ user }) {
 
     const results = [];
 
-    function handleChange(e) {
-        const isChecked = e.target.checked;
+    // function handleChange() {
+    //     setVisible(true);
 
-        // // then ask for confirmation, if yes, post this
+    //     if (complete) {
+    //         axios.post("http://localhost:5050/task/complete-task", {
+    //             complete: complete, collectionName: "personal-tasks"})
+    //             .then(navigate(0))
+    //             .catch(error => {
+    //                 console.error("Error: ", error);
+    //         });
+    //     } 
+    //     // navigate(0);
+
+    // }
+
+    const accept = (task, date) => {
+        // toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'You have checked of a task!', life: 3000 });
+
+        setComplete(!complete);
+
+
+        // use task and time to find the correct record- that wont work on repeated tasks... we need a task id
         axios.post("http://localhost:5050/task/complete-task", {
-            complete: isChecked, collectionName: "personal-tasks"})
+            complete: complete, collectionName: "personal-tasks", task: task, date_created: date })
             .then(navigate(0))
             .catch(error => {
                 console.error("Error: ", error);
         });
 
-        console.log("Checked:", isChecked);
 
-    }
+    };
 
-    // const accept = () => {
-    //     toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'You have checked of a task!', life: 3000 });
-
-    //     axios.post("http://localhost:5050/task/complete-task", {
-    //         complete: isChecked, collectionName: "personal-tasks",  })
-    //         .then(navigate(0))
-    //         .catch(error => {
-    //             console.error("Error: ", error);
-    //     });
-
-    // };
-
-    // const cancel = () => {
-    //     setVisible(false);
-    //     navigate(0);
-    // };
+    const cancel = () => {
+        setVisible(false);
+        navigate(0);
+    };
 
     for (const task of tasks) {
         if ( (! tasks.complete) && (task.user === user?.user) ) {
-            console.log("user", user?.user, task.user);
+            // console.log("user", user?.user, task.user);
 
             results.push(
 
                 <div>
                 
                     <Toast ref={toast} /> 
-                    <ConfirmPopup className="confirmPopup" //target={checkBoxButton.current} // position of the popup
+                    <ConfirmPopup className="confirmPopup" 
                         visible={visible} 
-                        onHide={() => setVisible(false)} // what happens when user closes popup 
-                        message="Are you sure you want to proceed?" accept={() => setComplete(!complete)} //reject={cancel} 
-                        />
-                    <input type="checkbox" onChange={() => setVisible(true)} />{task.task}
-                    {/* make it go in middle of screen */}
+                        onHide={() => setVisible(false)} 
+                        message="Are you sure you want to proceed?" accept={() => accept(task.task, task.date_created)} reject={cancel} />
+                    <input type="checkbox" onChange={() => setVisible(true)} /> {task.task}
                 
                 </div>
             )
@@ -297,7 +301,7 @@ function DisplayTaskLog({ user }) {
     for (const task of tasks) {
         // (tasks.complete) && 
         if ( ((task.user === user?.user) || (task.code === user?.code)) ) { // only show tasks that are complete and belong to the user's group code or personal tasks
-            console.log("task log", user?.user, task.user);
+            // console.log("task log", user?.user, task.user);
 
             //checked={task.complete}
             results.push(

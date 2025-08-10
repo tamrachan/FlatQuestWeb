@@ -73,8 +73,8 @@ router.get("/get-personal-tasks", async (req, res) => {
 
 // change status of task to completed 
 router.post("/complete-task", async (req, res) => {
-    let collection = await db.collection(req.body.collectionName);
-    let result = await collection.find({}).toArray();
+    // let collection = await db.collection(req.body.collectionName).updateOne();
+    return res.send(result).status(200);
 });
 
 
