@@ -3,7 +3,7 @@ import ProgressBar from "../components/ProgressBar";
 import redBeachBall from '../icons/red_beach_ball.png';
 
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "../components/AuthRoute";
 import { FaChevronDown } from "react-icons/fa";
@@ -217,7 +217,7 @@ function DisplayPersonalTasks({ user }) {
         });
     }, []);
 
-    const results = [];
+    // const results = [];
 
     // function handleChange() {
     //     setVisible(true);
@@ -275,7 +275,6 @@ function DisplayPersonalTasks({ user }) {
     );
 }
 
-// not tested
 function DisplayTaskLog({ user }) {
     const [tasks, setTasks] = useState([])
 
@@ -285,7 +284,9 @@ function DisplayTaskLog({ user }) {
             axios.get('http://localhost:5050/task/get-tasks')
         ])
         .then(([personalResponse, mainResponse]) => {
-            setTasks([...personalResponse.data, ...mainResponse.data]);
+            const combined = [...personalResponse.data, ...mainResponse.data];
+            combined.sort((a,b) => new Date(b.date_created) - new Date(a.date_created)); //sorts it so newest task on top of list
+            setTasks(combined);
         })
         .catch(error => {
             console.error("Error fetching task logs:", error);
