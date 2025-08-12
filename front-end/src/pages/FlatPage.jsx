@@ -168,6 +168,10 @@ function FlatPage() {
 function DisplayMainTasks({ user }) {
     // const { user } = useContext(UserContext); // could put this as a prop instead
     const [tasks, setTasks] = useState([]);
+    const navigate = useNavigate();
+
+    const toast = useRef(null);
+    const [confirmTaskId, setConfirmTaskId] = useState(null);
 
     useEffect(() => {
         axios.get('http://localhost:5050/task/get-tasks')
@@ -179,22 +183,62 @@ function DisplayMainTasks({ user }) {
         });
     }, []);
 
-    const results = [];
+    // const results = [];
 
     // console.log("user", user);
 
-    for (const task of tasks) {
-        if ( (! task.complete) && (task.code === user?.code) ) { // only show tasks that are not complete and belong to the user's group code
+    const accept = (taskId) => {
+        axios.post("http://localhost:5050/task/complete-task", {
+            collectionName: "tasks", _id: taskId })
+            .then(navigate(0))
+            .catch(error => {
+                console.error("Error: ", error);
+        });
 
-            // console.log("tasks", task);
+        // console.log("successss", taskId)
+    };
 
-            results.push(
-                <div>{task.assigned}: {task.task}</div>
-            )
-        }
-    }
+    const cancel = () => {
+        setConfirmTaskId(null);
+        navigate(0);
+    };
 
-    return <div>{results}</div>;
+    return (
+        <>
+            <div>
+            {// streams
+            tasks
+                .filter(task => (! task.complete) && (task.code === user?.code)) // only show tasks that are not complete and belong to the user's group code
+                .map(task => 
+
+                    <div key={task._id}>
+                        <input type="checkbox" onChange={() => setConfirmTaskId(task._id)} /> {task.assigned}: {task.task}
+
+                    </div>
+                )}
+            </div>
+
+            <div>
+                <Toast ref={toast} /> 
+                        <ConfirmPopup className="confirmPopup" 
+                            visible={confirmTaskId} 
+                            message="Are you sure you want to proceed?" accept={() => confirmTaskId && accept(confirmTaskId)} reject={cancel} />
+            </div>
+        </>
+    );
+
+    // for (const task of tasks) {
+    //     if ( (! task.complete) && (task.code === user?.code) ) { // only show tasks that are not complete and belong to the user's group code
+
+    //         // console.log("tasks", task);
+
+    //         results.push(
+    //             <div>{task.assigned}: {task.task}</div>
+    //         )
+    //     }
+    // }
+
+    // return <div>{results}</div>;
 }
 
 function DisplayPersonalTasks({ user }) {
@@ -217,23 +261,6 @@ function DisplayPersonalTasks({ user }) {
         });
     }, []);
 
-    // const results = [];
-
-    // function handleChange() {
-    //     setVisible(true);
-
-    //     if (complete) {
-    //         axios.post("http://localhost:5050/task/complete-task", {
-    //             complete: complete, collectionName: "personal-tasks"})
-    //             .then(navigate(0))
-    //             .catch(error => {
-    //                 console.error("Error: ", error);
-    //         });
-    //     } 
-    //     // navigate(0);
-
-    // }
-
     const accept = (taskId) => {
         axios.post("http://localhost:5050/task/complete-task", {
             collectionName: "personal", _id: taskId })
@@ -242,7 +269,7 @@ function DisplayPersonalTasks({ user }) {
                 console.error("Error: ", error);
         });
 
-        console.log("successss", taskId)
+        // console.log("successss", taskId)
     };
 
     const cancel = () => {
