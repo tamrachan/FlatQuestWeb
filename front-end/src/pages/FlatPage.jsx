@@ -15,6 +15,9 @@ function FlatPage() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
+    // const [showAssignmentModal, setShowAssignmentModal] = useState(false);
+    const isLeader = user?.role === "leader"; 
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -38,8 +41,10 @@ function FlatPage() {
     const addMainTask = (e) => {
         e.preventDefault();
         const taskValue = e.target.mainTask.value;
+        // const assigned = e.target.mainTask.assigned;
         
-        if (taskValue !== "") {
+        if ( (taskValue !== "")) {
+            // do the thing- get window
 
             // console.log("Adding main task:", taskValue, "for user:", user?.user);
 
@@ -83,16 +88,25 @@ function FlatPage() {
                 <div className="taskList">
 
                     <DisplayMainTasks user={user} /> 
-                    {/* <input type="checkbox" value="Take out rubbish"></input> maybe an onclick button would be better...  its gotta not be harcoded */}
 
                 </div>
             </div>
+            
+            {isLeader && (
             <div className="addMainTask">
                 <form onSubmit={addMainTask}> 
                     <input type="text" placeholder="Add main tasks here..." name="mainTask" className="inputText" />
                     <button type="submit">Add</button>
                 </form> 
             </div>
+            )}
+            {!isLeader && (
+            <div className="addMainTask">
+                    So many tasks, so little time...
+                    <br/>
+                    Luckily, not all of them are for you!
+            </div>
+            )}
 
             <div className="taskLog">
                 <h3>Task Log</h3>
@@ -154,6 +168,22 @@ function FlatPage() {
 
         </div>
 
+            {/* Add this in your return statement */}
+        {/* {showTaskConfigModal && (
+        <TaskConfigModal
+            taskValue={newTaskValue}
+            flatmates={flatmates}
+            taskConfig={taskConfig}
+            setTaskConfig={setTaskConfig}
+            onCreate={addMainTask}
+            onCancel={() => {
+                setShowTaskConfigModal(false);
+                setNewTaskValue("");
+                setTaskConfig({ assigned: "", repeat: "none" });
+        }}
+    />
+)} */}
+
     </>
 }
 
@@ -164,6 +194,82 @@ function FlatPage() {
 //     </div>
 
 // }
+
+function TaskConfigModal({ taskValue, flatmates, taskConfig, setTaskConfig, onCreate, onCancel }) {
+    const repeatOptions = [
+        { value: "none", label: "No Repeat" },
+        { value: "daily", label: "Daily" },
+        { value: "weekly", label: "Weekly" },
+        { value: "monthly", label: "Monthly" }
+    ];
+
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <h3>Configure Task</h3>
+                <p><strong>Task:</strong> "{taskValue}"</p>
+                
+                {/* Assignment Section */}
+                <div className="config-section">
+                    <h4>Assign to:</h4>
+                    <div className="assignment-options">
+                        <label>
+                            <input 
+                                type="radio" 
+                                name="assigned" 
+                                value="everyone"
+                                checked={taskConfig.assigned === "everyone"}
+                                onChange={(e) => setTaskConfig({...taskConfig, assigned: e.target.value})}
+                            />
+                            Everyone
+                        </label>
+                        
+                        {flatmates.map(flatmate => (
+                            <label key={flatmate.user}>
+                                <input 
+                                    type="radio" 
+                                    name="assigned" 
+                                    value={flatmate.user}
+                                    checked={taskConfig.assigned === flatmate.user}
+                                    onChange={(e) => setTaskConfig({...taskConfig, assigned: e.target.value})}
+                                />
+                                {flatmate.user}
+                            </label>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Repeat Section */}
+                <div className="config-section">
+                    <h4>Repeat:</h4>
+                    <select 
+                        value={taskConfig.repeat} 
+                        onChange={(e) => setTaskConfig({...taskConfig, repeat: e.target.value})}
+                    >
+                        {repeatOptions.map(option => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="modal-actions">
+                    <button 
+                        onClick={onCreate}
+                        disabled={!taskConfig.assigned}
+                        className="create-btn"
+                    >
+                        Create Task
+                    </button>
+                    <button onClick={onCancel} className="cancel-btn">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
 
 function DisplayMainTasks({ user }) {
     // const { user } = useContext(UserContext); // could put this as a prop instead
@@ -371,6 +477,43 @@ function Dropdown() {
         </>
     );
 }
+
+// function AssignmentModal({ taskValue, flatmates, onAssign, onCancel }) {
+//     return (
+//         <div className="modal-overlay">
+//             <div className="modal-content">
+//                 <h3>Assign Task</h3>
+//                 <p>Task: "{taskValue}"</p>
+//                 <p>Assign to:</p>
+                
+//                 <div className="assignment-options">
+//                     <button 
+//                         className="assign-btn everyone" 
+//                         onClick={() => onAssign("everyone")}
+//                     >
+//                         Everyone
+//                     </button>
+                    
+//                     {flatmates.map(flatmate => (
+//                         <button 
+//                             key={flatmate._id || flatmate.user}
+//                             className="assign-btn individual"
+//                             onClick={() => onAssign(flatmate.user)}
+//                         >
+//                             {flatmate.user}
+//                         </button>
+//                     ))}
+//                 </div>
+                
+//                 <div className="modal-actions">
+//                     <button className="cancel-btn" onClick={onCancel}>
+//                         Cancel
+//                     </button>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// }
 
 function Flatmate({ name, imageSrc }) {
     return <div className="flatmate-icon">
