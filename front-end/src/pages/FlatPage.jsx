@@ -11,12 +11,18 @@ import { FaChevronDown } from "react-icons/fa";
 import { ConfirmPopup, confirmPopup  } from 'primereact/confirmpopup'; 
 import { Toast } from 'primereact/toast';
 
+// import Popup from 'reactjs-popup';
+
 function FlatPage() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
     // const [showAssignmentModal, setShowAssignmentModal] = useState(false);
+    const [newTaskValue, setNewTaskValue] = useState("");
+    const [repeat, setRepeat] = useState("");
+    const [assign, setAssign] = useState("");
     const isLeader = user?.role === "leader"; 
+    const [flatmates, setFlatmates] = useState([]);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -34,9 +40,25 @@ function FlatPage() {
                 console.error("Failed to fetch user data:", err);
                 localStorage.removeItem("token");
                 navigate("/login");
-            });
+            });        
     }, []);
 
+    useEffect(() => {
+        if (!user?.code) return;
+
+        // console.log(user?.code, "codeee");
+
+        axios.get('http://localhost:5050/record/flatmates', 
+            {code: user.code}
+            )
+            .then(result => {
+                setFlatmates(result.data);
+            })
+            .catch(err => {
+                console.error("Failed to fetch flatmates:", err);
+            });
+        }, [user]);
+    // console.log(flatmates, "flatmates");
 
     const addMainTask = (e) => {
         e.preventDefault();
@@ -49,7 +71,7 @@ function FlatPage() {
             // console.log("Adding main task:", taskValue, "for user:", user?.user);
 
             axios.post('http://localhost:5050/task/new-task', 
-                {task: taskValue, code: user?.code, publisher: user?.user, assigned: "todo", date_created: new Date(), complete: false, repeat: "todo"}) // change repeat
+                {task: taskValue, code: user?.code, publisher: user?.user, assigned: assign, date_created: new Date(), complete: false, repeat: repeat}) 
                 .then(navigate(0)) // Reloads the current route
                 .catch(err => {
                     console.error("Error adding personal task:", err);
@@ -74,6 +96,20 @@ function FlatPage() {
                 })
         }
     }
+
+    // const popup = () => (  
+        
+    //     <Popup position="right center">    
+    //     <div>Popup content here !! 
+    //     {console.log("inside")}
+    //     <form onSubmit={addMainTask}> 
+    //                 <button type="submit">Add</button>
+    //             </form> 
+
+    //     </div> 
+        
+    //     </Popup>
+    // );
     
     return <>
         <div className="title">
@@ -94,7 +130,7 @@ function FlatPage() {
             
             {isLeader && (
             <div className="addMainTask">
-                <form onSubmit={addMainTask}> 
+                <form onSubmit={addMainTask}>  
                     <input type="text" placeholder="Add main tasks here..." name="mainTask" className="inputText" />
                     <button type="submit">Add</button>
                 </form> 
@@ -151,14 +187,16 @@ function FlatPage() {
 
                 <div className="flatmates">
 
-                <Flatmate name={"Hanaa"} imageSrc={redBeachBall} />
+                {flatmates
+                    .map(flatmate =>
+                        <Flatmate name={flatmate.name} imageSrc={redBeachBall} /> // TODO: have a place for image in database
+                )}
+
+                {/* <Flatmate name={"Hanaa"} imageSrc={redBeachBall} />
                 <Flatmate name={"Yi Xin"} imageSrc={redBeachBall} />
                 <Flatmate name={"Thy"} imageSrc={redBeachBall} />
                 <Flatmate name={"Freya"} imageSrc={redBeachBall} />
-                <Flatmate name={"Zoya"} imageSrc={redBeachBall} />
-
-                {/* i wanna do some sort of loop that loops through ppl in the flat, n does it with whoever the current person is as the first name, then 
-                alphabetical, but i do not know how to do that conditonal html yet... */}            
+                <Flatmate name={"Zoya"} imageSrc={redBeachBall} /> */}        
 
 
             </div>
@@ -168,18 +206,22 @@ function FlatPage() {
 
         </div>
 
+        {/* <popup mainTas={winner} ></popup> */}
+
             {/* Add this in your return statement */}
         {/* {showTaskConfigModal && (
         <TaskConfigModal
             taskValue={newTaskValue}
             flatmates={flatmates}
-            taskConfig={taskConfig}
-            setTaskConfig={setTaskConfig}
+            // taskConfig={taskConfig}
+            // setTaskConfig={setTaskConfig}
             onCreate={addMainTask}
             onCancel={() => {
-                setShowTaskConfigModal(false);
+                // setShowTaskConfigModal(false);
                 setNewTaskValue("");
-                setTaskConfig({ assigned: "", repeat: "none" });
+                setAssign("");
+                setRepeat("");
+                // setTaskConfig({ assigned: "", repeat: "none" });
         }}
     />
 )} */}
@@ -196,6 +238,8 @@ function FlatPage() {
 // }
 
 function TaskConfigModal({ taskValue, flatmates, taskConfig, setTaskConfig, onCreate, onCancel }) {
+    // if (!leader) return null;
+
     const repeatOptions = [
         { value: "none", label: "No Repeat" },
         { value: "daily", label: "Daily" },
@@ -213,26 +257,13 @@ function TaskConfigModal({ taskValue, flatmates, taskConfig, setTaskConfig, onCr
                 <div className="config-section">
                     <h4>Assign to:</h4>
                     <div className="assignment-options">
-                        <label>
-                            <input 
-                                type="radio" 
-                                name="assigned" 
-                                value="everyone"
-                                checked={taskConfig.assigned === "everyone"}
-                                onChange={(e) => setTaskConfig({...taskConfig, assigned: e.target.value})}
-                            />
-                            Everyone
-                        </label>
                         
                         {flatmates.map(flatmate => (
                             <label key={flatmate.user}>
-                                <input 
-                                    type="radio" 
-                                    name="assigned" 
+                                <input type="radio" name="assigned" 
                                     value={flatmate.user}
                                     checked={taskConfig.assigned === flatmate.user}
-                                    onChange={(e) => setTaskConfig({...taskConfig, assigned: e.target.value})}
-                                />
+                                    onChange={(e) => setTaskConfig({...taskConfig, assigned: e.target.value})} />
                                 {flatmate.user}
                             </label>
                         ))}
@@ -243,9 +274,7 @@ function TaskConfigModal({ taskValue, flatmates, taskConfig, setTaskConfig, onCr
                 <div className="config-section">
                     <h4>Repeat:</h4>
                     <select 
-                        value={taskConfig.repeat} 
-                        onChange={(e) => setTaskConfig({...taskConfig, repeat: e.target.value})}
-                    >
+                        onChange={(e) => setTaskConfig({...taskConfig, repeat: e.target.value})}>
                         {repeatOptions.map(option => (
                             <option key={option.value} value={option.value}>
                                 {option.label}
@@ -258,8 +287,7 @@ function TaskConfigModal({ taskValue, flatmates, taskConfig, setTaskConfig, onCr
                     <button 
                         onClick={onCreate}
                         disabled={!taskConfig.assigned}
-                        className="create-btn"
-                    >
+                        className="create-btn">
                         Create Task
                     </button>
                     <button onClick={onCancel} className="cancel-btn">
@@ -447,6 +475,23 @@ function DisplayTaskLog({ user }) {
     return <div>{results}</div>;
 }
 
+function popup(props) {
+    return (props.winnerProp) ? ( 
+        <div className="popup">
+
+            <div className="popupInner">
+
+                <h1>hello popup? {props.winnerProp} is me </h1>
+
+                <button>x</button>
+                { props.children }
+
+            </div>
+
+        </div>
+    ) : null;
+}
+
 // TODO
 function Dropdown() {
     const [ display, setDisplay ] = useState( 'none' )
@@ -514,6 +559,8 @@ function Dropdown() {
 //         </div>
 //     );
 // }
+
+
 
 function Flatmate({ name, imageSrc }) {
     return <div className="flatmate-icon">

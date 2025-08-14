@@ -234,18 +234,21 @@ router.delete("/:id", async (req, res) => {
 async function getFlatmatesByCode(code) {
     let collection = await db.collection("users");
     let flatmates = await collection.find({ code: code }).toArray();
-    console.log(results);
+    console.log(flatmates, "gjjf");
 
-    return flatmates
+    return flatmates;
 }
 
 // GET '/' fetches a list of all the records
 router.get("/flatmates", async (req, res) => {
-    const flatmates = await getFlatmatesByCode(req.body.code);
+    const flatmates = await getFlatmatesByCode(req.query.code);
+    console.log(req.query.code, "tegs");
 
     flatmates.forEach(user => {
-        console.log(user.user, user.name); 
+      console.log(user.user, user.name); 
     });
+
+    res.send(flatmates).status(200);
 });
 
 // NOT SURE how to test
