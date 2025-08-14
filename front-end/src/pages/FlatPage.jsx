@@ -312,13 +312,13 @@ function DisplayMainTasks({ user }) {
     return (
         <>
             <div>
-            {// streams
+            {// streams //  && (task.assigned === user?.user)
             tasks
-                .filter(task => (! task.complete) && (task.code === user?.code)) // only show tasks that are not complete and belong to the user's group code
+                .filter(task => (! task.complete) && (task.code === user?.code) && (task.assigned === user?.user)) // only show tasks that are not complete and belong to the user's group code
                 .map(task => 
 
                     <div key={task._id}>
-                        <input type="checkbox" onChange={() => setConfirmTaskId(task._id)} /> {task.assigned}: {task.task}
+                        <input type="checkbox" onChange={() => setConfirmTaskId(task._id)} /> {task.assigned}: {task.task} 
 
                     </div>
                 )}
