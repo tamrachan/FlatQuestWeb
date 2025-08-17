@@ -48,7 +48,7 @@ function FlatPage() {
         // console.log(user?.code, "codeee");
 
         axios.get('http://localhost:5050/record/flatmates', 
-            {code: user.code}
+            { params: {code: user?.code}}
             )
             .then(result => {
                 setFlatmates(result.data);
