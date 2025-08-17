@@ -16,8 +16,7 @@ import { Toast } from 'primereact/toast';
 function FlatPage() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
-
-    // const [showAssignmentModal, setShowAssignmentModal] = useState(false);
+    const [showTaskConfigModal, setShowTaskConfigModal] = useState(false);
     const [newTaskValue, setNewTaskValue] = useState("");
     const [repeat, setRepeat] = useState("");
     const [assign, setAssign] = useState("");
@@ -62,22 +61,51 @@ function FlatPage() {
 
     const addMainTask = (e) => {
         e.preventDefault();
-        const taskValue = e.target.mainTask.value;
+        // const taskValue = e.target.mainTask.value;
         // const assigned = e.target.mainTask.assigned;
         
-        if ( (taskValue !== "")) {
+        if ( newTaskValue !== "" ) {
             // do the thing- get window
 
             // console.log("Adding main task:", taskValue, "for user:", user?.user);
 
             axios.post('http://localhost:5050/task/new-task', 
-                {task: taskValue, code: user?.code, publisher: user?.user, assigned: assign, date_created: new Date(), complete: false, repeat: repeat}) 
-                .then(navigate(0)) // Reloads the current route
+                {task: newTaskValue, code: user?.code, publisher: user?.user, assigned: assign, date_created: new Date(), complete: false, repeat: repeat}) 
+                .then(() => {
+                    setShowTaskConfigModal(false);
+                    setNewTaskValue("");
+                    navigate(0); // Reloads the current route
+                }) 
                 .catch(err => {
                     console.error("Error adding personal task:", err);
                 })
         }
     }
+
+    const handleTaskAssignment = (e) => {
+        e.preventDefault();
+        const taskValue = e.target.mainTask.value;
+
+        if ( taskValue !== "" ) {
+            setShowTaskConfigModal(true);
+            setNewTaskValue(taskValue);
+            e.target.reset();
+        }
+
+
+        // if (newTaskValue !== "") {
+        //     axios.post('http://localhost:5050/task/new-task', 
+        //         {task: taskValue, code: user?.code, publisher: user?.user, assigned: assign, date_created: new Date(), complete: false, repeat: repeat})
+        //         .then(() => {
+        //             setShowAssignmentModal(false);
+        //             setNewTaskValue("");
+        //             navigate(0);
+        //         })
+        //         .catch(err => {
+        //             console.error("Error adding main task:", err);
+        //         });
+        // }
+    };
 
     const addPersonalTask = (e) => {
         e.preventDefault();
@@ -96,20 +124,6 @@ function FlatPage() {
                 })
         }
     }
-
-    // const popup = () => (  
-        
-    //     <Popup position="right center">    
-    //     <div>Popup content here !! 
-    //     {console.log("inside")}
-    //     <form onSubmit={addMainTask}> 
-    //                 <button type="submit">Add</button>
-    //             </form> 
-
-    //     </div> 
-        
-    //     </Popup>
-    // );
     
     return <>
         <div className="title">
@@ -130,7 +144,7 @@ function FlatPage() {
             
             {isLeader && (
             <div className="addMainTask">
-                <form onSubmit={addMainTask}>  
+                <form onSubmit={handleTaskAssignment}>  
                     <input type="text" placeholder="Add main tasks here..." name="mainTask" className="inputText" />
                     <button type="submit">Add</button>
                 </form> 
@@ -206,25 +220,25 @@ function FlatPage() {
 
         </div>
 
-        {/* <popup mainTas={winner} ></popup> */}
-
-            {/* Add this in your return statement */}
-        {/* {showTaskConfigModal && (
+        
+        { showTaskConfigModal && (
         <TaskConfigModal
             taskValue={newTaskValue}
             flatmates={flatmates}
             // taskConfig={taskConfig}
             // setTaskConfig={setTaskConfig}
+            setRepeat={setRepeat}
+            setAssign={setAssign}
             onCreate={addMainTask}
             onCancel={() => {
-                // setShowTaskConfigModal(false);
+                setShowTaskConfigModal(false);
                 setNewTaskValue("");
                 setAssign("");
                 setRepeat("");
                 // setTaskConfig({ assigned: "", repeat: "none" });
         }}
     />
-)} */}
+)}
 
     </>
 }
@@ -237,7 +251,7 @@ function FlatPage() {
 
 // }
 
-function TaskConfigModal({ taskValue, flatmates, taskConfig, setTaskConfig, onCreate, onCancel }) {
+function TaskConfigModal({ taskValue, flatmates, setAssign, setRepeat, onCreate, onCancel }) {
     // if (!leader) return null;
 
     const repeatOptions = [
@@ -262,8 +276,8 @@ function TaskConfigModal({ taskValue, flatmates, taskConfig, setTaskConfig, onCr
                             <label key={flatmate.user}>
                                 <input type="radio" name="assigned" 
                                     value={flatmate.user}
-                                    checked={taskConfig.assigned === flatmate.user}
-                                    onChange={(e) => setTaskConfig({...taskConfig, assigned: e.target.value})} />
+                                    // checked={taskConfig.assigned === flatmate.user}
+                                    onChange={(e) => setAssign(e.target.value)} />
                                 {flatmate.user}
                             </label>
                         ))}
@@ -274,7 +288,7 @@ function TaskConfigModal({ taskValue, flatmates, taskConfig, setTaskConfig, onCr
                 <div className="config-section">
                     <h4>Repeat:</h4>
                     <select 
-                        onChange={(e) => setTaskConfig({...taskConfig, repeat: e.target.value})}>
+                        onChange={(e) => setRepeat(e.target.value)}>
                         {repeatOptions.map(option => (
                             <option key={option.value} value={option.value}>
                                 {option.label}
@@ -286,7 +300,7 @@ function TaskConfigModal({ taskValue, flatmates, taskConfig, setTaskConfig, onCr
                 <div className="modal-actions">
                     <button 
                         onClick={onCreate}
-                        disabled={!taskConfig.assigned}
+                        // disabled={!taskConfig.assigned}
                         className="create-btn">
                         Create Task
                     </button>
